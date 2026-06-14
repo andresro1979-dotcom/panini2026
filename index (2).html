@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Álbum Panini FIFA 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --verde: #00a651;
+  --verde-oscuro: #006b34;
+  --dorado: #f5c518;
+  --dorado-oscuro: #c49a00;
+  --azul-noche: #0a1628;
+  --azul-medio: #132040;
+  --azul-claro: #1e3260;
+  --blanco: #ffffff;
+  --gris-claro: #f0f2f5;
+  --gris-medio: #c8cdd8;
+  --texto: #1a1a2e;
+  --pegada-bg: #d4f5e2;
+  --pegada-borde: #00a651;
+  --repetida-bg: #fff3cd;
+  --repetida-borde: #f5c518;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--azul-noche);
+  color: var(--blanco);
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* HEADER */
+.hero {
+  background: linear-gradient(135deg, var(--azul-noche) 0%, var(--azul-claro) 50%, var(--verde-oscuro) 100%);
+  padding: 1.25rem 1rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-top { display: flex; align-items: center; gap: 10px; margin-bottom: .75rem; }
+.trophy { font-size: 28px; }
+.hero h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.hero h1 span { color: var(--dorado); }
+
+/* STATS CARDS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: .75rem;
+}
+.stat-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 8px 6px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+.stat-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  display: block;
+}
+.stat-val.green { color: #4ade80; }
+.stat-val.gold { color: var(--dorado); }
+.stat-val.red { color: #f87171; }
+.stat-val.white { color: #fff; }
+.stat-label { font-size: 9px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; display: block; }
+
+/* PROGRESS */
+.prog-wrap { margin-bottom: .75rem; }
+.prog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.prog-title { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: .05em; }
+.prog-pct { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--dorado); }
+.prog-track {
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--verde) 0%, var(--dorado) 100%);
+  border-radius: 99px;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+  width: 0%;
+}
+
+/* BODY */
+.body-wrap {
+  background: var(--gris-claro);
+  min-height: calc(100vh - 240px);
+  border-radius: 18px 18px 0 0;
+  margin-top: .25rem;
+  padding: .75rem .75rem 1rem;
+}
+
+/* TOOLBAR */
+.toolbar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: .75rem;
+  flex-wrap: wrap;
+}
+.search-wrap { position: relative; flex: 1; min-width: 160px; }
+.search-wrap input {
+  width: 100%;
+  padding: 9px 10px 9px 34px;
+  font-size: 14px;
+  border: 1.5px solid #dde2ea;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--texto);
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color .2s;
+}
+.search-wrap input:focus { border-color: var(--verde); }
+.search-icon {
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #aaa;
+}
+.filtro-select {
+  padding: 9px 10px;
+  font-size: 13px;
+  border: 1.5px solid #dde2ea;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--texto);
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  cursor: pointer;
+}
+.action-btns { display: flex; gap: 6px; width: 100%; }
+.btn-action {
+  flex: 1;
+  padding: 8px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: transform .1s, opacity .1s;
+}
+.btn-action:active { transform: scale(0.96); }
+.btn-expand { background: var(--azul-noche); color: #fff; }
+.btn-export { background: var(--verde); color: #fff; }
+.btn-reset { background: #fee2e2; color: #dc2626; }
+
+/* LEGEND */
+.legend {
+  display: flex;
+  gap: 14px;
+  margin-bottom: .75rem;
+  flex-wrap: wrap;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+.leg-dot { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid; }
+.ld-libre { background: #eef0f5; border-color: #c8cdd8; }
+.ld-peg { background: var(--pegada-bg); border-color: var(--pegada-borde); }
+.ld-rep { background: var(--repetida-bg); border-color: var(--repetida-borde); }
+
+/* GRUPOS Y EQUIPOS */
+.group-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: #999;
+  margin: 1rem 0 .4rem;
+  padding-left: 4px;
+}
+.group-label:first-child { margin-top: 0; }
+
+.team-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1.5px solid #e8eaee;
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: box-shadow .2s;
+}
+.team-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.team-header:active { background: #f8f9fb; }
+.team-left { display: flex; align-items: center; gap: 8px; }
+.team-flag { font-size: 22px; line-height: 1; }
+.team-name { font-size: 14px; font-weight: 600; color: var(--texto); }
+.team-right-h { display: flex; align-items: center; gap: 8px; }
+.team-mini-prog {
+  width: 60px;
+  height: 5px;
+  background: #e8eaee;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.team-mini-fill { height: 100%; background: var(--verde); border-radius: 99px; transition: width .3s; }
+.team-count { font-size: 12px; font-weight: 600; color: #999; min-width: 36px; text-align: right; }
+.team-count.done { color: var(--verde); }
+.team-chevron { color: #ccc; font-size: 12px; transition: transform .2s; }
+
+.collapsed .team-chevron { transform: rotate(-90deg); }
+.collapsed .stickers-grid { display: none; }
+
+/* STICKERS */
+.stickers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+  gap: 6px;
+  padding: 10px 10px 12px;
+  border-top: 1px solid #f0f2f5;
+}
+.sticker {
+  border: 1.5px solid #e0e4ec;
+  border-radius: 10px;
+  padding: 6px 4px 5px;
+  text-align: center;
+  cursor: pointer;
+  background: #f6f8fb;
+  position: relative;
+  user-select: none;
+  transition: transform .1s, border-color .15s, background .15s;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.sticker:active { transform: scale(0.93); }
+
+.sticker.pegada {
+  background: var(--pegada-bg);
+  border-color: var(--pegada-borde);
+}
+.sticker.repetida {
+  background: var(--repetida-bg);
+  border-color: var(--repetida-borde);
+}
+.sticker.pegada.repetida {
+  background: var(--pegada-bg);
+  border-color: var(--pegada-borde);
+}
+
+.s-check {
+  position: absolute;
+  top: 3px; right: 4px;
+  font-size: 9px;
+  color: var(--verde);
+  display: none;
+  font-weight: 700;
+}
+.sticker.pegada .s-check { display: block; }
+
+.s-flag-img {
+  width: 32px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 3px;
+  display: block;
+  margin-bottom: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.s-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--texto);
+  display: block;
+  line-height: 1;
+}
+.sticker.pegada .s-num { color: var(--verde-oscuro); }
+.sticker.repetida .s-num { color: var(--dorado-oscuro); }
+
+.s-lbl {
+  font-size: 8.5px;
+  color: #8a90a0;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 54px;
+  margin-top: 1px;
+  line-height: 1.1;
+}
+.sticker.pegada .s-lbl { color: #1a7a45; }
+
+.rep-badge {
+  position: absolute;
+  top: -6px; right: -6px;
+  background: #f5c518;
+  color: #000;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  width: 18px; height: 18px;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  z-index: 2;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+/* MENÚ CONTEXTUAL */
+.ctx-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: flex-end;
+}
+.ctx-overlay.show { display: flex; }
+.ctx-sheet {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  padding: 1rem 1rem 1.5rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.ctx-handle {
+  width: 40px; height: 4px;
+  background: #ddd;
+  border-radius: 99px;
+  margin: 0 auto 1rem;
+}
+.ctx-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--texto);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.ctx-num {
+  display: inline-block;
+  background: var(--azul-noche);
+  color: var(--dorado);
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 20px;
+  margin-right: 6px;
+}
+.ctx-items { display: flex; flex-direction: column; gap: 8px; }
+.ctx-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: opacity .15s;
+  width: 100%;
+  text-align: left;
+}
+.ctx-btn:active { opacity: .75; }
+.ctx-icon { font-size: 20px; }
+.ctx-pegar { background: #d4f5e2; color: #006b34; }
+.ctx-masrep { background: #fff8e0; color: #9a6f00; }
+.ctx-menosrep { background: #fef0f0; color: #c0392b; }
+.ctx-quitar { background: #f0f0f5; color: #444; }
+.ctx-cancel { background: #f5f6fa; color: #666; margin-top: 4px; }
+
+/* REP COUNTER en ctx */
+.rep-counter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff8e0;
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 4px;
+}
+.rep-counter-label { flex: 1; font-size: 14px; font-weight: 600; color: #9a6f00; }
+.rep-counter-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #9a6f00;
+  min-width: 30px;
+  text-align: center;
+}
+.rep-btn {
+  width: 32px; height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: #f5c518;
+  color: #000;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  transition: transform .1s;
+}
+.rep-btn:active { transform: scale(.9); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--azul-noche);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all .3s;
+  pointer-events: none;
+  z-index: 9999;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* EMPTY STATE */
+.empty { text-align: center; padding: 2rem 1rem; color: #aaa; font-size: 14px; }
+
+@media (min-width: 600px) {
+  .stickers-grid { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
+  .stats-row { gap: 8px; }
+  .body-wrap { border-radius: 22px 22px 0 0; padding: 1rem; }
+  .ctx-overlay { align-items: center; }
+  .ctx-sheet { border-radius: 20px; margin: auto; max-width: 360px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-top">
+      <span class="trophy">🏆</span>
+      <h1>Álbum Panini<br><span>FIFA World Cup 2026</span></h1>
+    </div>
+    <div class="stats-row" id="stats"></div>
+    <div class="prog-wrap">
+      <div class="prog-header">
+        <span class="prog-title">Progreso total</span>
+        <span class="prog-pct" id="prog-pct">0%</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="body-wrap">
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Buscar número o jugador..." oninput="filterTeams()">
+    </div>
+    <select class="filtro-select" id="filtro" onchange="filterTeams()">
+      <option value="all">Todas</option>
+      <option value="missing">Me faltan</option>
+      <option value="pegadas">Pegadas</option>
+      <option value="repetidas">Repetidas</option>
+    </select>
+    <div class="action-btns">
+      <button class="btn-action btn-expand" onclick="toggleAll()">⇅ Expandir</button>
+      <button class="btn-action btn-export" onclick="exportarTxt()">📤 Exportar</button>
+      <button class="btn-action btn-reset" onclick="resetConfirm()">🗑 Borrar</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="leg-dot ld-libre"></div>Sin pegar</div>
+    <div class="legend-item"><div class="leg-dot ld-peg"></div>Pegada ✓</div>
+    <div class="legend-item"><div class="leg-dot ld-rep"></div>Repetida 🌟</div>
+  </div>
+
+  <div id="teams"></div>
+</div>
+
+<!-- Menú contextual tipo bottom sheet -->
+<div class="ctx-overlay" id="ctxOverlay" onclick="hideCtx(event)">
+  <div class="ctx-sheet" id="ctxSheet">
+    <div class="ctx-handle"></div>
+    <div class="ctx-title" id="ctxTitle">Lámina</div>
+    <div class="rep-counter-row" id="repRow">
+      <span class="rep-counter-label">🌟 Repetidas</span>
+      <button class="rep-btn" onclick="repAction(-1)">−</button>
+      <span class="rep-counter-val" id="repVal">0</span>
+      <button class="rep-btn" onclick="repAction(1)">+</button>
+    </div>
+    <div class="ctx-items">
+      <button class="ctx-btn ctx-pegar" onclick="ctxAction('pegar')"><span class="ctx-icon">✅</span>Marcar como pegada</button>
+      <button class="ctx-btn ctx-quitar" onclick="ctxAction('quitar')"><span class="ctx-icon">🗑</span>Quitar todas las marcas</button>
+      <button class="ctx-btn ctx-cancel" onclick="hideCtx()"><span class="ctx-icon">✕</span>Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function gen(start, count, names) {
+  return Array.from({length: count}, (_, i) => ({n: String(start+i), l: names[i] || ('Jug.'+(i-1))}));
+}
+function genEsp(count) {
+  return Array.from({length: count}, (_, i) => ({n: 'E'+(i+1), l: 'Especial '+(i+1)}));
+}
+
+const EQUIPOS = [
+  {g:"Grupo A",teams:[
+    {id:"QAT",n:"Qatar",f:"🇶🇦",fc:"qa",stickers:gen(1,20,["Escudo","Equipo","Portero","Al-Sheeb","Salman","Al-Rawi","Waad","Kheder","Tami","Asadalla","Hassan","Marcane","Al Moez","Alaaeldin","Hatem","Afif","Boudiaf","Al-Ahrak","Al-Haydos","Munir"])},
+    {id:"ECU",n:"Ecuador",f:"🇪🇨",fc:"ec",stickers:gen(21,20,["Escudo","Equipo","Galíndez","Arreaga","Torres","Preciado","Gruezo","Plata","Sarmiento","Caicedo","Valencia","Cifuentes","Mena","Estupiñán","Franco","Ibarra","Campana","Mercado","Vera","Ayoví"])},
+    {id:"SEN",n:"Senegal",f:"🇸🇳",fc:"sn",stickers:gen(41,20,["Escudo","Equipo","Mendy","Koulibaly","Jakobs","Ballo-Touré","Gueye","Kouyaté","Diatta","Sarr","Mané","Diallo","Cissé","Sabaly","Dieng","Badji","Mbaye","Ndiaye","Diedhiou","Pape"])},
+    {id:"NED",n:"Países Bajos",f:"🇳🇱",fc:"nl",stickers:gen(61,20,["Escudo","Equipo","Flekken","van Dijk","de Ligt","Blind","de Jong","Wijnaldum","Koopmeiners","Berghuis","Depay","Gakpo","Dumfries","Ake","de Vrij","Timber","Simons","Bergwijn","Zirkzee","Janssen"])}
+  ]},
+  {g:"Grupo B",teams:[
+    {id:"ENG",n:"Inglaterra",f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",fc:"gb-eng",stickers:gen(81,20,["Escudo","Equipo","Pickford","Walker","Stones","Maguire","Trippier","Bellingham","Rice","Saka","Kane","Foden","Alexander-A.","Shaw","Guehi","Gallagher","Gordon","Toney","Rashford","Dunk"])},
+    {id:"IRN",n:"Irán",f:"🇮🇷",fc:"ir",stickers:gen(101,20,["Escudo","Equipo","Beiranvand","Hosseini","Pouraliganji","Hajsafi","Noorollahi","Ezatolahi","Karimi","Gholizadeh","Azmoun","Jahanbakhsh","Taremi","Torabi","Mohammadi","Chesmi","Mesdaghi","Amiri","Ghafouri","Sayyadmanesh"])},
+    {id:"USA",n:"Estados Unidos",f:"🇺🇸",fc:"us",stickers:gen(121,20,["Escudo","Equipo","Turner","Dest","Richards","Ream","Robinson","McKennie","Adams","Musah","Pulisic","Weah","Ferreira","Acosta","Roldan","Moore","Llanez","Reynolds","Sargent","Zimmermann"])},
+    {id:"WAL",n:"Gales",f:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",fc:"gb-wls",stickers:gen(141,20,["Escudo","Equipo","Hennessey","Gunter","Mepham","Rodon","Davies","Ampadu","Allen","Ramsey","Bale","James","Moore","Norrington-D.","Roberts","Williams","Wilson","Thomas","Johnson","Levitt"])}
+  ]},
+  {g:"Grupo C",teams:[
+    {id:"ARG",n:"Argentina",f:"🇦🇷",fc:"ar",stickers:gen(161,20,["Escudo","Equipo","E.Martínez","Molina","Romero","Otamendi","Acuña","de Paul","E.Fernández","Mac Allister","Messi","L.Álvarez","Lo Celso","Dybala","Paredes","Palacios","Tagliafico","Correa","Lautaro","Almada"])},
+    {id:"KSA",n:"Arabia Saudita",f:"🇸🇦",fc:"sa",stickers:gen(181,20,["Escudo","Equipo","Al-Owais","Al-Ghannam","Al-Bulayhi","Al-Tambakti","Al-Shahrani","Al-Malki","Al-Faraj","Al-Dawsari","Al-Shehri","Al-Buraikan","Kanno","Al-Najei","Salim","Bahebri","Hawsawi","Sultan","Abdulelah","Abdulhamid"])},
+    {id:"MEX",n:"México",f:"🇲🇽",fc:"mx",stickers:gen(201,20,["Escudo","Equipo","Ochoa","Sánchez","Moreno","Montes","Gallardo","E.Álvarez","Herrera","Lozano","Jiménez","Antuna","Guardado","Tecatito","Vega","Pineda","Rodríguez","Giménez","Sosa","Arteaga"])},
+    {id:"POL",n:"Polonia",f:"🇵🇱",fc:"pl",stickers:gen(221,20,["Escudo","Equipo","Szczęsny","Bereszyński","Glik","Kiwior","Rybus","Bielik","Krychowiak","Zieliński","Lewandowski","Szymański","Kamińska","Bednarek","Frankowski","Milik","Skóraś","Piatek","Buksa","Góralski"])}
+  ]},
+  {g:"Grupo D",teams:[
+    {id:"FRA",n:"Francia",f:"🇫🇷",fc:"fr",stickers:gen(241,20,["Escudo","Equipo","Lloris","Pavard","Varane","Upamecano","Theo","Tchouaméni","Camavinga","Griezmann","Mbappé","Dembélé","Konaté","Saliba","Guendouzi","Rabiot","Coman","Giroud","Nkunku","Maignan"])},
+    {id:"AUS",n:"Australia",f:"🇦🇺",fc:"au",stickers:gen(261,20,["Escudo","Equipo","Ryan","Degenek","Rowles","Souttar","Behich","Mooy","Irvine","Leckie","Mabil","Duke","Hrustic","Atkinson","Devlin","McGree","Roux","Maclaren","Nabbout","Flor"])},
+    {id:"DEN",n:"Dinamarca",f:"🇩🇰",fc:"dk",stickers:gen(281,20,["Escudo","Equipo","Schmeichel","Andersen","Christensen","Kjær","Maehle","Eriksen","Hojbjerg","Delaney","Damsgaard","Wind","Braithwaite","Nørgaard","Boilesen","Dolberg","Poulsen","Cornelius","Jensen","Bah"])},
+    {id:"TUN",n:"Túnez",f:"🇹🇳",fc:"tn",stickers:gen(301,20,["Escudo","Equipo","Dahmen","Bronn","Meriah","Talbi","Maaloul","Sassi","Khazri","Ben Slimane","Msakni","Jebali","Laïdouni","Ghandri","Drager","Rekik","Skhiri","Sliti","Ben Romdhane","Khenissi"])}
+  ]},
+  {g:"Grupo E",teams:[
+    {id:"ESP",n:"España",f:"🇪🇸",fc:"es",stickers:gen(321,20,["Escudo","Equipo","Unai Simón","Carvajal","Laporte","Pau Torres","Alba","Busquets","Gavi","Pedri","Ferran","Morata","Yamal","Rodri","Koke","Asensio","Dani Olmo","N.Williams","Oyarzabal","Grimaldo"])},
+    {id:"CRC",n:"Costa Rica",f:"🇨🇷",fc:"cr",stickers:gen(341,20,["Escudo","Equipo","Navas","Waston","Calvo","Fuller","Oviedo","Borges","Tejeda","Campbell","Contreras","Ruiz","Duarte","Vargas","Bennette","Torres","Ureña","Lépiz","Aguilera","Solís"])},
+    {id:"GER",n:"Alemania",f:"🇩🇪",fc:"de",stickers:gen(361,20,["Escudo","Equipo","Neuer","Kimmich","Rüdiger","Schlotterbeck","Raum","Can","Kroos","Goretzka","Havertz","Gnabry","Musiala","Müller","Hofmann","Süle","Gündogan","Wirtz","Ter Stegen","Füllkrug"])},
+    {id:"JPN",n:"Japón",f:"🇯🇵",fc:"jp",stickers:gen(381,20,["Escudo","Equipo","Gonda","Yoshida","Tanaka","Ito","Nagatomo","Shibasaki","Morita","Kamada","Asano","Minamino","Kubo","Tomiyasu","Ueda","Maeda","Matsuki","Kawabe","Doan","Hayashi"])}
+  ]},
+  {g:"Grupo F",teams:[
+    {id:"BEL",n:"Bélgica",f:"🇧🇪",fc:"be",stickers:gen(401,20,["Escudo","Equipo","Courtois","Alderweireld","Vertonghen","Boyata","Castagne","Witsel","Tielemans","Meunier","De Bruyne","Lukaku","Carrasco","Onana","Doku","Theate","Mangala","Vanaken","Trossard","Hazard"])},
+    {id:"CAN",n:"Canadá",f:"🇨🇦",fc:"ca",stickers:gen(421,20,["Escudo","Equipo","Borjan","Johnston","Vitória","Miller","Davies","Eustáquio","Osorio","Hutchinson","David","Larin","Buchanan","Adekugbe","Hoilett","Fraser","Cavallini","Cornelius","Piette","Kaye"])},
+    {id:"MAR",n:"Marruecos",f:"🇲🇦",fc:"ma",stickers:gen(441,20,["Escudo","Equipo","Bono","Hakimi","Aguerd","El Yamiq","Mazraoui","Amrabat","Ounahi","Ziyech","En-Nesyri","Boufal","Dari","Attiat-Allah","Sabiri","El Khannouss","Benoun","Jabrane","Aboukhlal","Aziz"])},
+    {id:"CRO",n:"Croacia",f:"🇭🇷",fc:"hr",stickers:gen(461,20,["Escudo","Equipo","Livaković","Juranović","Lovren","Gvardiol","Sosa","Modrić","Brozović","Kovačić","Perišić","Kramarić","Vlašić","Ćaleta-Car","Budimir","Pašalić","Ivanušec","Majer","Sutalo","Livaja"])}
+  ]},
+  {g:"Grupo G",teams:[
+    {id:"BRA",n:"Brasil",f:"🇧🇷",fc:"br",stickers:gen(481,20,["Escudo","Equipo","Alisson","Danilo","Militão","Thiago Silva","Alex Sandro","Casemiro","L.Paquetá","Raphinha","Neymar","Vinícius Jr","Rodrygo","Marquinhos","Bremer","Fred","Richarlison","G.Jesus","Antony","Endrick"])},
+    {id:"SRB",n:"Serbia",f:"🇷🇸",fc:"rs",stickers:gen(501,20,["Escudo","Equipo","Milinković-S.","Milenković","Pavlović","Veljković","Mladenović","Lukić","S.Milinković","Maksimović","Tadić","Mitrović","Jović","Živković","Gudelj","Kostić","Vlahović","Samardzić","Babić","Lazović"])},
+    {id:"SUI",n:"Suiza",f:"🇨🇭",fc:"ch",stickers:gen(521,20,["Escudo","Equipo","Sommer","Widmer","Schär","Akanji","Rodriguez","Freuler","G.Xhaka","Vargas","Shaqiri","Embolo","Seferovic","Zakaria","Elvedi","Steffen","Rieder","Ndoye","Okafor","Jashari"])},
+    {id:"CMR",n:"Camerún",f:"🇨🇲",fc:"cm",stickers:gen(541,20,["Escudo","Equipo","Onana","Fai","Nkoulou","Ngadeu","Nouhou","Anguissa","Mbeumo","Toko-Ekambi","Aboubakar","Choupo-M.","Kunde","Olivier","Hongla","Ntcham","Bassogog","Nkam","Moumi","Lekula"])}
+  ]},
+  {g:"Grupo H",teams:[
+    {id:"POR",n:"Portugal",f:"🇵🇹",fc:"pt",stickers:gen(561,20,["Escudo","Equipo","Costa","Cancelo","Pepe","Danilo","Guerreiro","Moutinho","Neves","Bernardo","Ronaldo","Félix","Leão","Palhinha","Dias","Vitinha","Horta","Gonçalves","Guedes","Neto"])},
+    {id:"GHA",n:"Ghana",f:"🇬🇭",fc:"gh",stickers:gen(581,20,["Escudo","Equipo","Ati-Zigi","Djiku","Amartey","Salisu","Mensah","Partey","Samed","Ayew","Kudus","Williams","Thomas","Baba","Abdul-Rahman","Aidoo","Sulemana","Ansu","Asiedu","Lamptey"])},
+    {id:"URU",n:"Uruguay",f:"🇺🇾",fc:"uy",stickers:gen(601,20,["Escudo","Equipo","Rochet","Nandez","Giménez","Godín","Olivera","Valverde","Bentancur","de la Cruz","Suárez","Núñez","Cavani","Ugarte","Araújo","Pellistri","Vidal","Acevedo","Torres","Gómez"])},
+    {id:"KOR",n:"Corea del Sur",f:"🇰🇷",fc:"kr",stickers:gen(621,20,["Escudo","Equipo","Kim S.G.","Kim M.H.","Kim M.J.","Kim Y.G.","Kim J.S.","Jung W.Y.","Hwang I.B.","Lee J.S.","Son H.M.","Cho G.S.","Hwang H.C.","Kwon C.H.","Oh H.G.","Jeong W.Y.","Na S.H.","Song M.K.","Lee K.I.","Paik S.H."])}
+  ]},
+  {g:"Grupos I-L",teams:[
+    {id:"COL",n:"Colombia",f:"🇨🇴",fc:"co",stickers:gen(641,20,["Escudo","Equipo","Vargas","Muñoz","Dávinson","Lucumí","Mojica","Lerma","Uribe","Cuadrado","J.Díaz","Falcao","L.Díaz","Borja","Arias","Ríos","Cuesta","Sinisterra","Durán","Arango"])},
+    {id:"ITA",n:"Italia",f:"🇮🇹",fc:"it",stickers:gen(661,20,["Escudo","Equipo","Donnarumma","Di Lorenzo","Bonucci","Acerbi","Spinazzola","Jorginho","Barella","Verratti","Insigne","Immobile","Chiesa","Locatelli","Bastoni","Pessina","Raspadori","Scamacca","Tonali","Cristante"])},
+    {id:"NIG",n:"Nigeria",f:"🇳🇬",fc:"ng",stickers:gen(681,20,["Escudo","Equipo","Uzoho","Ola Aina","Troost-Ekong","Bassey","Zaidu","Ndidi","Iwobi","Chukwueze","Osimhen","Simon","Musa","Aribo","Onyeka","Awaziem","Oghenekaro","Osinachi","Dozie","Nwakali","Ejuke"])},
+    {id:"VEN",n:"Venezuela",f:"🇻🇪",fc:"ve",stickers:gen(701,20,["Escudo","Equipo","Romo","Mago","Villanueva","Osorio","Navarro","Herrera","Rincon","Machís","Soteldo","Quijada","Cádiz","Febles","González","Flores","Collado","Peñaranda","Castellano","Murillo"])},
+    {id:"PAR",n:"Paraguay",f:"🇵🇾",fc:"py",stickers:gen(721,20,["Escudo","Equipo","Silva","Adebayor","Alonso","Vega","Villalba","Bobadilla","Gómez","Almirón","Sanabria","Vera","Rojas","Díaz","Martínez","Ortiz","Meza","Benítez","Medina","Sosa","Cabral"])},
+    {id:"CHI",n:"Chile",f:"🇨🇱",fc:"cl",stickers:gen(741,20,["Escudo","Equipo","Bravo","Isla","Medel","Maripán","Mena","Vidal","Pulgar","Aránguiz","A.Sánchez","Vargas","Valdivia","Mora","Pérez","Palacios","Gil","Zampedri","Montecinos","Dávila","Díaz"])},
+    {id:"PER",n:"Perú",f:"🇵🇪",fc:"pe",stickers:gen(761,20,["Escudo","Equipo","Gallese","Advíncula","Zambrano","Callens","Trauco","Tapia","Peña","Yotún","Guerrero","Flores","Cueva","Polo","Abram","Quispe","Valera","Aquino","Reyna","Cáceda","Ortiz"])},
+    {id:"BOL",n:"Bolivia",f:"🇧🇴",fc:"bo",stickers:gen(781,20,["Escudo","Equipo","Cordano","Sagredo","Jusino","Bejarano","Álvarez","Saucedo","Hurtado","Viscarra","Algarañaz","Arce","Fernández","Quinteros","Wayar","Ramallo","Navia","Chumacero","Villamil","Uchida","Martins"])},
+    {id:"AUT",n:"Austria",f:"🇦🇹",fc:"at",stickers:gen(801,20,["Escudo","Equipo","Pentz","Posch","Trauner","Wöber","Alibec","Seiwald","Grillitsch","Laimer","Sabitzer","Arnautovic","Gregoritsch","Lienhart","Ranftl","Baumgartner","Weimann","Kainz","Trimmel","Ljubicic","Daniliuc"])},
+    {id:"EGY",n:"Egipto",f:"🇪🇬",fc:"eg",stickers:gen(821,20,["Escudo","Equipo","El-Shenawy","Akram Tawfik","Hegazy","Omar Kamal","Hamdy","Hamada","El-Nenni","Elneny","Salah","Trezeguet","Mostafa","Zizo","Taher","Ashraf","Ramadan","Sherif","Kahraba","Emam","Nada"])},
+    {id:"CIV",n:"Costa de Marfil",f:"🇨🇮",fc:"ci",stickers:gen(841,20,["Escudo","Equipo","Zouzoua","Aurier","Bailly","Deli","Diallo","Sangaré","Seri","Dié","Pépé","Gradel","Cornet","Konan","Zaha","Boga","Kessié","Sylla","Dao","Gnahore","Doumbia"])},
+    {id:"NZL",n:"Nueva Zelanda",f:"🇳🇿",fc:"nz",stickers:gen(861,20,["Escudo","Equipo","Sail","Stensness","Boxall","Bell","Woud","McGlinchey","Garbett","Thomas","Smeltz","Wood","Payne","Cacace","Tuilagi","Singh","Lewis","Found","James","Moran","de Vries"])},
+    {id:"SLV",n:"El Salvador",f:"🇸🇻",fc:"sv",stickers:gen(881,20,["Escudo","Equipo","Castro","Domínguez","Acevedo","Rodríguez","Rivas","García","Góchez","Tamacas","Hérculez","Rugamas","Cartagena","Martínez","Monge","Larin","Lara","Recinos","Turcios","Portillo","Melgar"])},
+    {id:"ESP3",n:"Especiales",f:"⭐",fc:"",stickers:genEsp(20)}
+  ]}
+];
+
+const TOTAL = 980;
+let state = {};
+let ctxTarget = {num: null, teamId: null};
+let touchTimer = null;
+let allExpanded = false;
+
+function loadState() {
+  try { const s = localStorage.getItem('panini2026v3'); if(s) state = JSON.parse(s); } catch(e){}
+}
+function saveState() {
+  try { localStorage.setItem('panini2026v3', JSON.stringify(state)); } catch(e){}
+}
+function getS(num) { return state[num] || {p:false,r:0}; }
+function countPeg() { return Object.values(state).filter(v=>v.p).length; }
+function countRep() { return Object.values(state).reduce((a,v)=>a+(v.r||0),0); }
+
+function updateStats() {
+  const peg = countPeg(), rep = countRep();
+  const pct = Math.round(peg/TOTAL*100);
+  const faltan = TOTAL - peg;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><span class="stat-val green">${peg}</span><span class="stat-label">Pegadas</span></div>
+    <div class="stat-card"><span class="stat-val red">${faltan}</span><span class="stat-label">Faltan</span></div>
+    <div class="stat-card"><span class="stat-val gold">${rep}</span><span class="stat-label">Repetidas</span></div>
+    <div class="stat-card"><span class="stat-val white">${pct}%</span><span class="stat-label">Listo</span></div>`;
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+}
+
+function stickerCls(num) {
+  const s = getS(num);
+  return 'sticker' + (s.p?' pegada':'') + (s.r>0?' repetida':'');
+}
+
+function renderTeam(team) {
+  const peg = team.stickers.filter(s=>getS(s.n).p).length;
+  const total = team.stickers.length;
+  const done = peg === total;
+  const progPct = Math.round(peg/total*100);
+  const stickersHtml = team.stickers.map(s => {
+    const st = getS(s.n);
+    return `<div class="${stickerCls(s.n)}" id="st-${s.n}"
+      onclick="togglePeg('${s.n}','${team.id}')"
+      oncontextmenu="showCtx(event,'${s.n}','${team.id}')"
+      ontouchstart="touchStart(event,'${s.n}','${team.id}')"
+      ontouchend="touchEnd()">
+      <span class="s-check">✓</span>
+      <span class="s-num">${s.n}</span>
+      <span class="s-lbl">${s.l}</span>
+      ${st.r>0?`<span class="rep-badge">${st.r}</span>`:''}
+    </div>`;
+  }).join('');
+  return `<div class="team-card collapsed" id="tc-${team.id}">
+    <div class="team-header" onclick="toggleTeam('${team.id}')">
+      <div class="team-left">
+        <span class="team-flag">${team.f}</span>
+        <span class="team-name">${team.n}</span>
+      </div>
+      <div class="team-right-h">
+        <div class="team-mini-prog"><div class="team-mini-fill" style="width:${progPct}%"></div></div>
+        <span class="team-count${done?' done':''}">${peg}/${total}</span>
+        <span class="team-chevron">▼</span>
+      </div>
+    </div>
+    <div class="stickers-grid">${stickersHtml}</div>
+  </div>`;
+}
+
+function renderAll(filtered) {
+  const src = filtered || EQUIPOS;
+  const html = src.map(g =>
+    `<div class="group-label">${g.g}</div>${g.teams.map(t=>renderTeam(t)).join('')}`
+  ).join('');
+  document.getElementById('teams').innerHTML = html || '<div class="empty">No se encontraron láminas</div>';
+}
+
+function toggleTeam(id) {
+  document.getElementById('tc-'+id).classList.toggle('collapsed');
+}
+
+function togglePeg(num, teamId) {
+  const s = getS(num);
+  s.p = !s.p;
+  state[num] = s;
+  saveState();
+  refreshSticker(num);
+  refreshTeamHeader(teamId);
+  updateStats();
+  showToast(s.p ? '✅ Lámina '+num+' pegada' : '↩ Lámina '+num+' desmarcada');
+}
+
+function refreshSticker(num) {
+  const el = document.getElementById('st-'+num);
+  if(!el) return;
+  const s = getS(num);
+  el.className = stickerCls(num);
+  const old = el.querySelector('.rep-badge');
+  if(old) old.remove();
+  if(s.r>0) {
+    const b = document.createElement('span');
+    b.className='rep-badge'; b.textContent=s.r; el.appendChild(b);
+  }
+}
+
+function refreshTeamHeader(teamId) {
+  const team = findTeam(teamId);
+  if(!team) return;
+  const peg = team.stickers.filter(s=>getS(s.n).p).length;
+  const total = team.stickers.length;
+  const el = document.querySelector(`#tc-${teamId} .team-count`);
+  if(el) { el.textContent=peg+'/'+total; el.className='team-count'+(peg===total?' done':''); }
+  const fill = document.querySelector(`#tc-${teamId} .team-mini-fill`);
+  if(fill) fill.style.width = Math.round(peg/total*100)+'%';
+}
+
+function findTeam(id) {
+  for(const g of EQUIPOS) for(const t of g.teams) if(t.id===id) return t;
+}
+
+function showCtx(e, num, teamId) {
+  e.preventDefault();
+  openCtxSheet(num, teamId);
+}
+function touchStart(e, num, teamId) {
+  touchTimer = setTimeout(() => openCtxSheet(num, teamId), 550);
+}
+function touchEnd() { clearTimeout(touchTimer); }
+
+function openCtxSheet(num, teamId) {
+  ctxTarget = {num, teamId};
+  const s = getS(num);
+  const team = findTeam(teamId);
+  const sticker = team ? team.stickers.find(s=>s.n===num) : null;
+  document.getElementById('ctxTitle').innerHTML = `<span class="ctx-num">#${num}</span> ${sticker?sticker.l:''}`;
+  document.getElementById('repVal').textContent = s.r || 0;
+  document.getElementById('ctxOverlay').classList.add('show');
+}
+
+function hideCtx(e) {
+  if(!e || e.target===document.getElementById('ctxOverlay'))
+    document.getElementById('ctxOverlay').classList.remove('show');
+}
+
+function repAction(delta) {
+  const {num, teamId} = ctxTarget;
+  if(!num) return;
+  const s = getS(num);
+  s.r = Math.max(0, (s.r||0) + delta);
+  state[num] = s;
+  saveState();
+  document.getElementById('repVal').textContent = s.r;
+  refreshSticker(num);
+  refreshTeamHeader(teamId);
+  updateStats();
+}
+
+function ctxAction(action) {
+  const {num, teamId} = ctxTarget;
+  if(!num) return;
+  const s = getS(num);
+  if(action==='pegar') { s.p=true; showToast('✅ Lámina '+num+' pegada'); }
+  else if(action==='quitar') { s.p=false; s.r=0; showToast('🗑 Lámina '+num+' borrada'); }
+  state[num] = s;
+  saveState();
+  refreshSticker(num);
+  refreshTeamHeader(teamId);
+  updateStats();
+  document.getElementById('ctxOverlay').classList.remove('show');
+}
+
+function toggleAll() {
+  allExpanded = !allExpanded;
+  document.querySelectorAll('.team-card').forEach(el => el.classList.toggle('collapsed', !allExpanded));
+  document.querySelector('.btn-expand').textContent = allExpanded ? '⇅ Colapsar' : '⇅ Expandir';
+}
+
+function filterTeams() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const f = document.getElementById('filtro').value;
+  const result = EQUIPOS.map(g => ({
+    ...g,
+    teams: g.teams.filter(team => {
+      if(q && !team.n.toLowerCase().includes(q) && !team.stickers.some(s=>s.n.includes(q)||s.l.toLowerCase().includes(q))) return false;
+      if(f==='missing' && team.stickers.every(s=>getS(s.n).p)) return false;
+      if(f==='pegadas' && !team.stickers.some(s=>getS(s.n).p)) return false;
+      if(f==='repetidas' && !team.stickers.some(s=>getS(s.n).r>0)) return false;
+      return true;
+    })
+  })).filter(g=>g.teams.length>0);
+  renderAll(result);
+  if(q) document.querySelectorAll('.team-card').forEach(el=>el.classList.remove('collapsed'));
+}
+
+function exportarTxt() {
+  const peg = Object.entries(state).filter(([,v])=>v.p).map(([k])=>k);
+  const rep = Object.entries(state).filter(([,v])=>v.r>0).map(([k,v])=>`${k}(x${v.r})`);
+  const missing = [];
+  for(const g of EQUIPOS) for(const t of g.teams) for(const s of t.stickers) if(!getS(s.n).p) missing.push(s.n);
+  const txt = `ÁLBUM PANINI FIFA WORLD CUP 2026\nFecha: ${new Date().toLocaleDateString('es-CL')}\nProgreso: ${Math.round(peg.length/TOTAL*100)}% (${peg.length}/${TOTAL})\n\nPEGADAS:\n${peg.join(', ')||'ninguna'}\n\nME FALTAN:\n${missing.join(', ')}\n\nREPETIDAS:\n${rep.join(', ')||'ninguna'}`;
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
+  a.download = 'panini2026.txt'; a.click();
+}
+
+function resetConfirm() {
+  if(confirm('¿Borrar todo el progreso? No se puede deshacer.')) {
+    state={}; saveState(); renderAll(); updateStats();
+    showToast('🗑 Progreso reiniciado');
+  }
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2000);
+}
+
+loadState(); renderAll(); updateStats();
+</script>
+</body>
+</html>
