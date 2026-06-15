@@ -537,90 +537,136 @@ body {
 
 <script>
 function gen(start, count, names) {
-  return Array.from({length: count}, (_, i) => ({n: String(start+i), l: names[i] || ('Jug.'+(i-1))}));
+  return Array.from({length: count}, (_, i) => ({n: String(start+i), d: String(i+1), l: names[i] || ('Jug.'+(i+1))}));
 }
-function genEsp(count) {
-  return Array.from({length: count}, (_, i) => ({n: 'E'+(i+1), l: 'Especial '+(i+1)}));
+function genFWC() {
+  return [
+    {n:"00",   l:"Panini Logo"},
+    {n:"FWC1", l:"Emblema Ofic. 1/2"},
+    {n:"FWC2", l:"Emblema Ofic. 2/2"},
+    {n:"FWC3", l:"Mascotas Oficiales"},
+    {n:"FWC4", l:"Eslogan Oficial"},
+    {n:"FWC5", l:"Balón Oficial"},
+    {n:"FWC6", l:"Canadá - Sede"},
+    {n:"FWC7", l:"México - Sede"},
+    {n:"FWC8", l:"EE.UU. - Sede"},
+    {n:"FWC9", l:"Museo: Italia 1934"},
+    {n:"FWC10",l:"Museo: Uruguay 1950"},
+    {n:"FWC11",l:"Museo: Brasil 1958"},
+    {n:"FWC12",l:"Museo: Inglaterra 1966"},
+    {n:"FWC13",l:"Museo: Alemania 1974"},
+    {n:"FWC14",l:"Museo: Argentina 1978"},
+    {n:"FWC15",l:"Museo: Italia 1982"},
+    {n:"FWC16",l:"Museo: Argentina 1986"},
+    {n:"FWC17",l:"Museo: Brasil 1994"},
+    {n:"FWC18",l:"Museo: Francia 1998"},
+    {n:"FWC19",l:"Museo: Argentina 2022"}
+  ];
+}
+function genExtra() {
+  const pl = ["Messi (ARG)","Doku (BEL)","Vinícius Jr (BRA)","Davies (CAN)","L.Díaz (COL)","Modrić (CRO)","M.Caicedo (ECU)","Salah (EGY)","Bellingham (ENG)","Mbappé (FRA)","Wirtz (GER)","R.Jiménez (MEX)","Hakimi (MAR)","Gakpo (NED)","Haaland (NOR)","Ronaldo C. (POR)","Son H-M (KOR)","Yamal (ESP)","Pulisic (USA)","Valverde (URU)"];
+  return pl.map((l, i) => ({n:"EX"+(i+1), l}));
+}
+function genCC() {
+  const pl = ["Yamal (ESP)","Kimmich (GER)","Kane (ENG)","S.Giménez (MEX)","Robinson (USA)","Lerma (COL)","Álvarez E. (MEX)","van Dijk (NED)","Davies (CAN)","McKennie (USA)","Laut.Martínez (ARG)","G.Magalhães (BRA)"];
+  return pl.map((l, i) => ({n:"CC"+(i+1), l}));
 }
 
 const EQUIPOS = [
+  {g:"Especiales FWC",teams:[
+    {id:"FWC",n:"FIFA World Cup 2026",f:"🏆",fc:"",stickers:genFWC()}
+  ]},
   {g:"Grupo A",teams:[
-    {id:"QAT",n:"Qatar",f:"🇶🇦",fc:"qa",stickers:gen(1,20,["Escudo","Equipo","Portero","Al-Sheeb","Salman","Al-Rawi","Waad","Kheder","Tami","Asadalla","Hassan","Marcane","Al Moez","Alaaeldin","Hatem","Afif","Boudiaf","Al-Ahrak","Al-Haydos","Munir"])},
-    {id:"ECU",n:"Ecuador",f:"🇪🇨",fc:"ec",stickers:gen(21,20,["Escudo","Equipo","Galíndez","Arreaga","Torres","Preciado","Gruezo","Plata","Sarmiento","Caicedo","Valencia","Cifuentes","Mena","Estupiñán","Franco","Ibarra","Campana","Mercado","Vera","Ayoví"])},
-    {id:"SEN",n:"Senegal",f:"🇸🇳",fc:"sn",stickers:gen(41,20,["Escudo","Equipo","Mendy","Koulibaly","Jakobs","Ballo-Touré","Gueye","Kouyaté","Diatta","Sarr","Mané","Diallo","Cissé","Sabaly","Dieng","Badji","Mbaye","Ndiaye","Diedhiou","Pape"])},
-    {id:"NED",n:"Países Bajos",f:"🇳🇱",fc:"nl",stickers:gen(61,20,["Escudo","Equipo","Flekken","van Dijk","de Ligt","Blind","de Jong","Wijnaldum","Koopmeiners","Berghuis","Depay","Gakpo","Dumfries","Ake","de Vrij","Timber","Simons","Bergwijn","Zirkzee","Janssen"])}
+    {id:"MEX",n:"México",f:"🇲🇽",fc:"mx",stickers:gen(21,20,["Equipo","Escudo","Rangel","Acevedo","Ochoa","J.Sánchez","Montes","Álvarez E.","Gallardo","L.Chávez","Romo","Fidalgo","Pineda","O.Vargas","B.Gutiérrez","R.Jiménez","S.Giménez","A.Vega","Alvarado","Quiñones"])},
+    {id:"RSA",n:"Sudáfrica",f:"🇿🇦",fc:"za",stickers:gen(41,20,["Equipo","Escudo","R.Williams","Goss","Chaine","Modiba","Mudau","Sibisi","Mbokazi","Ndamane","Mokoena","Mbatha","Sithole","Adams J.","Zwane","Foster","Makgopa","Appollis","Rayners","Mofokeng"])},
+    {id:"KOR",n:"Corea del Sur",f:"🇰🇷",fc:"kr",stickers:gen(61,20,["Equipo","Escudo","Kim S-G","Song B-K","Lee H-B","Kim M-J","Kim T-H","Park J-S","Bae J-H","Lee K-I","Hwang I-B","Hwang H-C","Yang H-J","Lee J-S","Paik S-H","Eom J-S","Lee T-S","Son H-M","Cho G-S","Oh H-G"])},
+    {id:"CZE",n:"Chequia",f:"🇨🇿",fc:"cz",stickers:gen(81,20,["Equipo","Escudo","Kovář","Staněk","Coufal","Holeš","Hranáč","Krejčí","Jurásek","Zelený","Darida","Souček","Červ","Provod","Sadílek","Šulc","Hložek","Schick","Kuchta","Chytil"])}
   ]},
   {g:"Grupo B",teams:[
-    {id:"ENG",n:"Inglaterra",f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",fc:"gb-eng",stickers:gen(81,20,["Escudo","Equipo","Pickford","Walker","Stones","Maguire","Trippier","Bellingham","Rice","Saka","Kane","Foden","Alexander-A.","Shaw","Guehi","Gallagher","Gordon","Toney","Rashford","Dunk"])},
-    {id:"IRN",n:"Irán",f:"🇮🇷",fc:"ir",stickers:gen(101,20,["Escudo","Equipo","Beiranvand","Hosseini","Pouraliganji","Hajsafi","Noorollahi","Ezatolahi","Karimi","Gholizadeh","Azmoun","Jahanbakhsh","Taremi","Torabi","Mohammadi","Chesmi","Mesdaghi","Amiri","Ghafouri","Sayyadmanesh"])},
-    {id:"USA",n:"Estados Unidos",f:"🇺🇸",fc:"us",stickers:gen(121,20,["Escudo","Equipo","Turner","Dest","Richards","Ream","Robinson","McKennie","Adams","Musah","Pulisic","Weah","Ferreira","Acosta","Roldan","Moore","Llanez","Reynolds","Sargent","Zimmermann"])},
-    {id:"WAL",n:"Gales",f:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",fc:"gb-wls",stickers:gen(141,20,["Escudo","Equipo","Hennessey","Gunter","Mepham","Rodon","Davies","Ampadu","Allen","Ramsey","Bale","James","Moore","Norrington-D.","Roberts","Williams","Wilson","Thomas","Johnson","Levitt"])}
+    {id:"CAN",n:"Canadá",f:"🇨🇦",fc:"ca",stickers:gen(101,20,["Equipo","Escudo","St.Clair","Crépeau","Johnston","Jones A.","Cornelius","Bombito","Davies","Waterman","Eustáquio","Koné","Osorio","Shaffelburg","Millar","David J.","Buchanan","Oluwaseyi","Larin","Nelson"])},
+    {id:"BIH",n:"Bosnia-Herz.",f:"🇧🇦",fc:"ba",stickers:gen(121,20,["Equipo","Escudo","Vasilj","Zlomislić","Kolašinac","Hadžikadunić","Muharemović","Dedić","Katić","Radeljić","Tahirović","Gigović","Šunjić","Burnić","Hadžiahm.","Bajraktarević","Demirović","Džeko","Baždar","Tabaković"])},
+    {id:"QAT",n:"Qatar",f:"🇶🇦",fc:"qa",stickers:gen(141,20,["Equipo","Escudo","Abunada","Barsham","Pedro Miguel","Lucas Mendes","Gaber","Boualem K.","Madibo","Hatem","Boudiaf","Al-Ganehi","Fathy A.","Alaaeldin","Edmilson","Muntari","Al-Haydos","Afif","Almoez Ali","Abdurisag"])},
+    {id:"SUI",n:"Suiza",f:"🇨🇭",fc:"ch",stickers:gen(161,20,["Equipo","Escudo","Kobel","Mvogo","Akanji","Elvedi","Rodriguez R.","Widmer","Comert","Xhaka","Freuler","Jashari","Aebischer","Sow","Zakaria","Rieder","Vargas R.","Embolo","Ndoye","Okafor"])}
   ]},
   {g:"Grupo C",teams:[
-    {id:"ARG",n:"Argentina",f:"🇦🇷",fc:"ar",stickers:gen(161,20,["Escudo","Equipo","E.Martínez","Molina","Romero","Otamendi","Acuña","de Paul","E.Fernández","Mac Allister","Messi","L.Álvarez","Lo Celso","Dybala","Paredes","Palacios","Tagliafico","Correa","Lautaro","Almada"])},
-    {id:"KSA",n:"Arabia Saudita",f:"🇸🇦",fc:"sa",stickers:gen(181,20,["Escudo","Equipo","Al-Owais","Al-Ghannam","Al-Bulayhi","Al-Tambakti","Al-Shahrani","Al-Malki","Al-Faraj","Al-Dawsari","Al-Shehri","Al-Buraikan","Kanno","Al-Najei","Salim","Bahebri","Hawsawi","Sultan","Abdulelah","Abdulhamid"])},
-    {id:"MEX",n:"México",f:"🇲🇽",fc:"mx",stickers:gen(201,20,["Escudo","Equipo","Ochoa","Sánchez","Moreno","Montes","Gallardo","E.Álvarez","Herrera","Lozano","Jiménez","Antuna","Guardado","Tecatito","Vega","Pineda","Rodríguez","Giménez","Sosa","Arteaga"])},
-    {id:"POL",n:"Polonia",f:"🇵🇱",fc:"pl",stickers:gen(221,20,["Escudo","Equipo","Szczęsny","Bereszyński","Glik","Kiwior","Rybus","Bielik","Krychowiak","Zieliński","Lewandowski","Szymański","Kamińska","Bednarek","Frankowski","Milik","Skóraś","Piatek","Buksa","Góralski"])}
+    {id:"BRA",n:"Brasil",f:"🇧🇷",fc:"br",stickers:gen(181,20,["Equipo","Escudo","Alisson","Ederson","Marquinhos","Gabriel","Bremer","Danilo","Alex Sandro","Casemiro","B.Guimarães","Paquetá","Raphinha","Vinícius Jr","Neymar","Endrick","Rodrygo","Cunha","Martinelli","Igor Thiago"])},
+    {id:"MAR",n:"Marruecos",f:"🇲🇦",fc:"ma",stickers:gen(201,20,["Equipo","Escudo","Bounou","Mohamedi","Mazraoui","Aguerd","Hakimi","Riad","Diop I.","Halhal","El Ouahdi","Amrabat","Ounahi","El Khannouss","Saibari","Bouaddi","Ezzalzouli","Diaz B.","Rahimi","El Kaabi"])},
+    {id:"HAI",n:"Haití",f:"🇭🇹",fc:"ht",stickers:gen(221,20,["Equipo","Escudo","Placide","Duverger","Ade","Arcus","Duverne","Lacroix","Paugain","Delcroix","Pierre L.","Jean Jacques","Sainte","Bellegarde","Pierre W.","Simon D.","Nazon","Pierrot","Etienne Jr.","Isidor"])},
+    {id:"SCO",n:"Escocia",f:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",fc:"gb-sct",stickers:gen(241,20,["Equipo","Escudo","Gordon","Gunn","Hanley","Hendry","McKenna","Robertson","Patterson","Tierney","Christie","McGinn","McLean","McTominay","Ferguson L.","Gannon-Doak","Adams C.","Dykes","Shankland","Stewart R."])}
   ]},
   {g:"Grupo D",teams:[
-    {id:"FRA",n:"Francia",f:"🇫🇷",fc:"fr",stickers:gen(241,20,["Escudo","Equipo","Lloris","Pavard","Varane","Upamecano","Theo","Tchouaméni","Camavinga","Griezmann","Mbappé","Dembélé","Konaté","Saliba","Guendouzi","Rabiot","Coman","Giroud","Nkunku","Maignan"])},
-    {id:"AUS",n:"Australia",f:"🇦🇺",fc:"au",stickers:gen(261,20,["Escudo","Equipo","Ryan","Degenek","Rowles","Souttar","Behich","Mooy","Irvine","Leckie","Mabil","Duke","Hrustic","Atkinson","Devlin","McGree","Roux","Maclaren","Nabbout","Flor"])},
-    {id:"DEN",n:"Dinamarca",f:"🇩🇰",fc:"dk",stickers:gen(281,20,["Escudo","Equipo","Schmeichel","Andersen","Christensen","Kjær","Maehle","Eriksen","Hojbjerg","Delaney","Damsgaard","Wind","Braithwaite","Nørgaard","Boilesen","Dolberg","Poulsen","Cornelius","Jensen","Bah"])},
-    {id:"TUN",n:"Túnez",f:"🇹🇳",fc:"tn",stickers:gen(301,20,["Escudo","Equipo","Dahmen","Bronn","Meriah","Talbi","Maaloul","Sassi","Khazri","Ben Slimane","Msakni","Jebali","Laïdouni","Ghandri","Drager","Rekik","Skhiri","Sliti","Ben Romdhane","Khenissi"])}
+    {id:"USA",n:"Estados Unidos",f:"🇺🇸",fc:"us",stickers:gen(261,20,["Equipo","Escudo","Turner","Brady","Dest","Ream","McKenzie","Richards","Robinson A.","Scally","Adams T.","McKennie","Reyna","Tillman","Roldan","Pulisic","Weah","Balogun","Pepi","Wright H."])},
+    {id:"PAR",n:"Paraguay",f:"🇵🇾",fc:"py",stickers:gen(281,20,["Equipo","Escudo","Fernández G.","Olveira","Velázquez","Alderete","Cáceres J.","Balbuena","Alonso J.","Gómez G.","Sosa R.","Diego Gómez","Almirón","Cubas","Bobadilla","Ojeda","Galarza","Sanabria","Enciso","Kaku"])},
+    {id:"AUS",n:"Australia",f:"🇦🇺",fc:"au",stickers:gen(301,20,["Equipo","Escudo","Ryan","Izzo","Behich","Souttar H.","Burgess","Circati","Degenek","Geria","Irvine","Devlin","Hrustic","O'Neill","Metcalfe","Leckie","Mabil","Irankunda","Volpato","Yengi"])},
+    {id:"TUR",n:"Türkiye",f:"🇹🇷",fc:"tr",stickers:gen(321,20,["Equipo","Escudo","Günok","Bayındır","Çelik","Demiral","Söyüncü","Bardakçı","Kabak","Kadıoğlu","Özcan S.","Kökçü","Calhanoglu","Güler","Yildiz K.","Aktürkoğlu","Kahveci","Yilmaz B.","Ayhan K.","Can Uzun"])}
   ]},
   {g:"Grupo E",teams:[
-    {id:"ESP",n:"España",f:"🇪🇸",fc:"es",stickers:gen(321,20,["Escudo","Equipo","Unai Simón","Carvajal","Laporte","Pau Torres","Alba","Busquets","Gavi","Pedri","Ferran","Morata","Yamal","Rodri","Koke","Asensio","Dani Olmo","N.Williams","Oyarzabal","Grimaldo"])},
-    {id:"CRC",n:"Costa Rica",f:"🇨🇷",fc:"cr",stickers:gen(341,20,["Escudo","Equipo","Navas","Waston","Calvo","Fuller","Oviedo","Borges","Tejeda","Campbell","Contreras","Ruiz","Duarte","Vargas","Bennette","Torres","Ureña","Lépiz","Aguilera","Solís"])},
-    {id:"GER",n:"Alemania",f:"🇩🇪",fc:"de",stickers:gen(361,20,["Escudo","Equipo","Neuer","Kimmich","Rüdiger","Schlotterbeck","Raum","Can","Kroos","Goretzka","Havertz","Gnabry","Musiala","Müller","Hofmann","Süle","Gündogan","Wirtz","Ter Stegen","Füllkrug"])},
-    {id:"JPN",n:"Japón",f:"🇯🇵",fc:"jp",stickers:gen(381,20,["Escudo","Equipo","Gonda","Yoshida","Tanaka","Ito","Nagatomo","Shibasaki","Morita","Kamada","Asano","Minamino","Kubo","Tomiyasu","Ueda","Maeda","Matsuki","Kawabe","Doan","Hayashi"])}
+    {id:"GER",n:"Alemania",f:"🇩🇪",fc:"de",stickers:gen(341,20,["Equipo","Escudo","Neuer","Baumann","Rüdiger","Schlotterbeck","Tah","Anton","Raum","Brown N.","Kimmich","Goretzka","Stiller","Gross","Pavlovic","Musiala","Wirtz","Havertz","Sané","Beier"])},
+    {id:"CUW",n:"Curaçao",f:"🇨🇼",fc:"cw",stickers:gen(361,20,["Equipo","Escudo","Room","Doornbusch","Gaari","van Eijma","Floranus","Brenet","Sambo","Obispo","Bazoer","Bacuna L.","Bacuna J.","Noslin","Martha","Comenencia","Felida","Gorre","Kuwas","Chong"])},
+    {id:"CIV",n:"Costa de Marfil",f:"🇨🇮",fc:"ci",stickers:gen(381,20,["Equipo","Escudo","Fofana Y.","Lafont","Agbadou","Diomande O.","Ndicka","Kossounou","Singo","Konan","Sangare","Kessie","Fofana S.","Seri","Adingra","Diallo A.","Pepe N.","Wahi","Bonny","Guessand"])},
+    {id:"ECU",n:"Ecuador",f:"🇪🇨",fc:"ec",stickers:gen(401,20,["Equipo","Escudo","Galíndez","Ramírez M.","Hincapié","Pacho","Estupiñán","Torres F.","Ordóñez","Porozo","Preciado","M.Caicedo","Franco A.","K.Páez","Vite","Alcívar","Valencia E.","Rodríguez K.","J.Caicedo","Angulo"])}
   ]},
   {g:"Grupo F",teams:[
-    {id:"BEL",n:"Bélgica",f:"🇧🇪",fc:"be",stickers:gen(401,20,["Escudo","Equipo","Courtois","Alderweireld","Vertonghen","Boyata","Castagne","Witsel","Tielemans","Meunier","De Bruyne","Lukaku","Carrasco","Onana","Doku","Theate","Mangala","Vanaken","Trossard","Hazard"])},
-    {id:"CAN",n:"Canadá",f:"🇨🇦",fc:"ca",stickers:gen(421,20,["Escudo","Equipo","Borjan","Johnston","Vitória","Miller","Davies","Eustáquio","Osorio","Hutchinson","David","Larin","Buchanan","Adekugbe","Hoilett","Fraser","Cavallini","Cornelius","Piette","Kaye"])},
-    {id:"MAR",n:"Marruecos",f:"🇲🇦",fc:"ma",stickers:gen(441,20,["Escudo","Equipo","Bono","Hakimi","Aguerd","El Yamiq","Mazraoui","Amrabat","Ounahi","Ziyech","En-Nesyri","Boufal","Dari","Attiat-Allah","Sabiri","El Khannouss","Benoun","Jabrane","Aboukhlal","Aziz"])},
-    {id:"CRO",n:"Croacia",f:"🇭🇷",fc:"hr",stickers:gen(461,20,["Escudo","Equipo","Livaković","Juranović","Lovren","Gvardiol","Sosa","Modrić","Brozović","Kovačić","Perišić","Kramarić","Vlašić","Ćaleta-Car","Budimir","Pašalić","Ivanušec","Majer","Sutalo","Livaja"])}
+    {id:"NED",n:"Países Bajos",f:"🇳🇱",fc:"nl",stickers:gen(421,20,["Equipo","Escudo","Verbruggen","Flekken","van Dijk","Aké","van Hecke","van de Ven","Dumfries","Timber J.","de Jong F.","Reijnders","Koopmeiners","Gravenberch","de Roon","Gakpo","Malen","Brobbey","Lang N.","Depay"])},
+    {id:"JPN",n:"Japón",f:"🇯🇵",fc:"jp",stickers:gen(441,20,["Equipo","Escudo","Hayakawa","Suzuki Z.","Nagatomo","Taniguchi","Itakura","Watanabe T.","Tomiyasu","Sugawara","Endo W.","Ito J.","Kamada","Tanaka A.","Doan","Kubo","Maeda","Nakamura K.","Ueda A.","Suzuki I."])},
+    {id:"SWE",n:"Suecia",f:"🇸🇪",fc:"se",stickers:gen(461,20,["Equipo","Escudo","Johansson V.","Nordfeldt","Lindelöf","Hien","Lagerbielke","Starfelt","Ekdal H.","Holm E.","Bergvall","Svanberg","Sema","Ayari","Karlström","Elanga","Gyökeres","Isak","Nilsson G.","Nygren"])},
+    {id:"TUN",n:"Túnez",f:"🇹🇳",fc:"tn",stickers:gen(481,20,["Equipo","Escudo","Dahmen","Chamakh","Talbi","Bronn","Abdi A.","Valery","Ben Hamida","Rekik","Shkiri","Mejbri","Ben Slimane","Ben Ouanes","Gharbi","Khedira R.","Achouri","Mastouri","Saad E.","Elloumi"])}
   ]},
   {g:"Grupo G",teams:[
-    {id:"BRA",n:"Brasil",f:"🇧🇷",fc:"br",stickers:gen(481,20,["Escudo","Equipo","Alisson","Danilo","Militão","Thiago Silva","Alex Sandro","Casemiro","L.Paquetá","Raphinha","Neymar","Vinícius Jr","Rodrygo","Marquinhos","Bremer","Fred","Richarlison","G.Jesus","Antony","Endrick"])},
-    {id:"SRB",n:"Serbia",f:"🇷🇸",fc:"rs",stickers:gen(501,20,["Escudo","Equipo","Milinković-S.","Milenković","Pavlović","Veljković","Mladenović","Lukić","S.Milinković","Maksimović","Tadić","Mitrović","Jović","Živković","Gudelj","Kostić","Vlahović","Samardzić","Babić","Lazović"])},
-    {id:"SUI",n:"Suiza",f:"🇨🇭",fc:"ch",stickers:gen(521,20,["Escudo","Equipo","Sommer","Widmer","Schär","Akanji","Rodriguez","Freuler","G.Xhaka","Vargas","Shaqiri","Embolo","Seferovic","Zakaria","Elvedi","Steffen","Rieder","Ndoye","Okafor","Jashari"])},
-    {id:"CMR",n:"Camerún",f:"🇨🇲",fc:"cm",stickers:gen(541,20,["Escudo","Equipo","Onana","Fai","Nkoulou","Ngadeu","Nouhou","Anguissa","Mbeumo","Toko-Ekambi","Aboubakar","Choupo-M.","Kunde","Olivier","Hongla","Ntcham","Bassogog","Nkam","Moumi","Lekula"])}
+    {id:"BEL",n:"Bélgica",f:"🇧🇪",fc:"be",stickers:gen(501,20,["Equipo","Escudo","Courtois","Lammens","Castagne","Debast","Theate","De Cuyper","De Winter","Mechele","De Bruyne","Onana A.","Tielemans","Witsel","Vanaken","Doku","Lukaku R.","Trossard","De Ketelaere","Saelemaekers"])},
+    {id:"EGY",n:"Egipto",f:"🇪🇬",fc:"eg",stickers:gen(521,20,["Equipo","Escudo","El Shenawy","Shobeir","Fathy H.","Rabia","Hany M.","Fatouh","Abdelmonem","Ibrahim Y.","Attia","Ashour","Lasheen","Saber M.","Salah","Trezeguet","Zizo","Marmoush","Adel I.","Hassan H."])},
+    {id:"IRN",n:"Irán",f:"🇮🇷",fc:"ir",stickers:gen(541,20,["Equipo","Escudo","Beiranvand","Niazmand","Hardani","Hajsafi","Khalilzadeh","Mohammadi M.","Kanaanizad.","Rezaeian","Ezatolahi","Jahanbakhsh","Ghoddos","Mohebi","Torabi","Cheshmi","Taremi","Ghayedi","Alipour","Eckert"])},
+    {id:"NZL",n:"Nueva Zelanda",f:"🇳🇿",fc:"nz",stickers:gen(561,20,["Equipo","Escudo","Crocombe","Woud","Payne","Boxall","Pijnaker","Cacace","Bindon","Smith T.","Bell J.","Garbett","Stamenic","Singh S.","Rufer","Old B.","Wood C.","Barbarouses","Waine","Randall"])}
   ]},
   {g:"Grupo H",teams:[
-    {id:"POR",n:"Portugal",f:"🇵🇹",fc:"pt",stickers:gen(561,20,["Escudo","Equipo","Costa","Cancelo","Pepe","Danilo","Guerreiro","Moutinho","Neves","Bernardo","Ronaldo","Félix","Leão","Palhinha","Dias","Vitinha","Horta","Gonçalves","Guedes","Neto"])},
-    {id:"GHA",n:"Ghana",f:"🇬🇭",fc:"gh",stickers:gen(581,20,["Escudo","Equipo","Ati-Zigi","Djiku","Amartey","Salisu","Mensah","Partey","Samed","Ayew","Kudus","Williams","Thomas","Baba","Abdul-Rahman","Aidoo","Sulemana","Ansu","Asiedu","Lamptey"])},
-    {id:"URU",n:"Uruguay",f:"🇺🇾",fc:"uy",stickers:gen(601,20,["Escudo","Equipo","Rochet","Nandez","Giménez","Godín","Olivera","Valverde","Bentancur","de la Cruz","Suárez","Núñez","Cavani","Ugarte","Araújo","Pellistri","Vidal","Acevedo","Torres","Gómez"])},
-    {id:"KOR",n:"Corea del Sur",f:"🇰🇷",fc:"kr",stickers:gen(621,20,["Escudo","Equipo","Kim S.G.","Kim M.H.","Kim M.J.","Kim Y.G.","Kim J.S.","Jung W.Y.","Hwang I.B.","Lee J.S.","Son H.M.","Cho G.S.","Hwang H.C.","Kwon C.H.","Oh H.G.","Jeong W.Y.","Na S.H.","Song M.K.","Lee K.I.","Paik S.H."])}
+    {id:"ESP",n:"España",f:"🇪🇸",fc:"es",stickers:gen(581,20,["Equipo","Escudo","Simón","Raya D.","Laporte","Cucurella","Cubarsi","Eric García","Porro","Grimaldo","Rodri","Pedri","Gavi","Merino","Zubimendi","Baena","Yamal","Williams N.","Olmo","Oyarzabal"])},
+    {id:"CPV",n:"Cabo Verde",f:"🇨🇻",fc:"cv",stickers:gen(601,20,["Equipo","Escudo","Vozinho","Marcio Rosa","Stopira","Lopes R.","João Paulo","Diney","Logan Costa","Moreira S.","Monteiro J.","Pina K.","Duarte D.","Arcanjo T.","Duarte L.","Semedo Y.","Mendes R.","Rodrigues G.","Cabral J.","da Costa N."])},
+    {id:"KSA",n:"Arabia Saudita",f:"🇸🇦",fc:"sa",stickers:gen(621,20,["Equipo","Escudo","Al-Owais","Al-Aqidi","Abdulhamid","Al-Tambakti","Al-Amri","Boushal","Lajami","Kadesh","Al-Khaibari","Kanno","Al-Dawsari S.","Al-Dawsari N.","Yahya A.","Al-Johani","Al-Buraikan","Al-Shehri","Al-Hamdan","Al-Ghannam"])},
+    {id:"URU",n:"Uruguay",f:"🇺🇾",fc:"uy",stickers:gen(641,20,["Equipo","Escudo","Rochet","Muslera","Varela","Araújo R.","Giménez J.","Bueno","Cáceres S.","Olivera","Ugarte","Valverde","Bentancur","De Arrascaeta","de la Cruz","Pellistri","Canobbio","Rodríguez B.","Núñez D.","Viñas"])}
   ]},
-  {g:"Grupos I-L",teams:[
-    {id:"COL",n:"Colombia",f:"🇨🇴",fc:"co",stickers:gen(641,20,["Escudo","Equipo","Vargas","Muñoz","Dávinson","Lucumí","Mojica","Lerma","Uribe","Cuadrado","J.Díaz","Falcao","L.Díaz","Borja","Arias","Ríos","Cuesta","Sinisterra","Durán","Arango"])},
-    {id:"ITA",n:"Italia",f:"🇮🇹",fc:"it",stickers:gen(661,20,["Escudo","Equipo","Donnarumma","Di Lorenzo","Bonucci","Acerbi","Spinazzola","Jorginho","Barella","Verratti","Insigne","Immobile","Chiesa","Locatelli","Bastoni","Pessina","Raspadori","Scamacca","Tonali","Cristante"])},
-    {id:"NIG",n:"Nigeria",f:"🇳🇬",fc:"ng",stickers:gen(681,20,["Escudo","Equipo","Uzoho","Ola Aina","Troost-Ekong","Bassey","Zaidu","Ndidi","Iwobi","Chukwueze","Osimhen","Simon","Musa","Aribo","Onyeka","Awaziem","Oghenekaro","Osinachi","Dozie","Nwakali","Ejuke"])},
-    {id:"VEN",n:"Venezuela",f:"🇻🇪",fc:"ve",stickers:gen(701,20,["Escudo","Equipo","Romo","Mago","Villanueva","Osorio","Navarro","Herrera","Rincon","Machís","Soteldo","Quijada","Cádiz","Febles","González","Flores","Collado","Peñaranda","Castellano","Murillo"])},
-    {id:"PAR",n:"Paraguay",f:"🇵🇾",fc:"py",stickers:gen(721,20,["Escudo","Equipo","Silva","Adebayor","Alonso","Vega","Villalba","Bobadilla","Gómez","Almirón","Sanabria","Vera","Rojas","Díaz","Martínez","Ortiz","Meza","Benítez","Medina","Sosa","Cabral"])},
-    {id:"CHI",n:"Chile",f:"🇨🇱",fc:"cl",stickers:gen(741,20,["Escudo","Equipo","Bravo","Isla","Medel","Maripán","Mena","Vidal","Pulgar","Aránguiz","A.Sánchez","Vargas","Valdivia","Mora","Pérez","Palacios","Gil","Zampedri","Montecinos","Dávila","Díaz"])},
-    {id:"PER",n:"Perú",f:"🇵🇪",fc:"pe",stickers:gen(761,20,["Escudo","Equipo","Gallese","Advíncula","Zambrano","Callens","Trauco","Tapia","Peña","Yotún","Guerrero","Flores","Cueva","Polo","Abram","Quispe","Valera","Aquino","Reyna","Cáceda","Ortiz"])},
-    {id:"BOL",n:"Bolivia",f:"🇧🇴",fc:"bo",stickers:gen(781,20,["Escudo","Equipo","Cordano","Sagredo","Jusino","Bejarano","Álvarez","Saucedo","Hurtado","Viscarra","Algarañaz","Arce","Fernández","Quinteros","Wayar","Ramallo","Navia","Chumacero","Villamil","Uchida","Martins"])},
-    {id:"AUT",n:"Austria",f:"🇦🇹",fc:"at",stickers:gen(801,20,["Escudo","Equipo","Pentz","Posch","Trauner","Wöber","Alibec","Seiwald","Grillitsch","Laimer","Sabitzer","Arnautovic","Gregoritsch","Lienhart","Ranftl","Baumgartner","Weimann","Kainz","Trimmel","Ljubicic","Daniliuc"])},
-    {id:"EGY",n:"Egipto",f:"🇪🇬",fc:"eg",stickers:gen(821,20,["Escudo","Equipo","El-Shenawy","Akram Tawfik","Hegazy","Omar Kamal","Hamdy","Hamada","El-Nenni","Elneny","Salah","Trezeguet","Mostafa","Zizo","Taher","Ashraf","Ramadan","Sherif","Kahraba","Emam","Nada"])},
-    {id:"CIV",n:"Costa de Marfil",f:"🇨🇮",fc:"ci",stickers:gen(841,20,["Escudo","Equipo","Zouzoua","Aurier","Bailly","Deli","Diallo","Sangaré","Seri","Dié","Pépé","Gradel","Cornet","Konan","Zaha","Boga","Kessié","Sylla","Dao","Gnahore","Doumbia"])},
-    {id:"NZL",n:"Nueva Zelanda",f:"🇳🇿",fc:"nz",stickers:gen(861,20,["Escudo","Equipo","Sail","Stensness","Boxall","Bell","Woud","McGlinchey","Garbett","Thomas","Smeltz","Wood","Payne","Cacace","Tuilagi","Singh","Lewis","Found","James","Moran","de Vries"])},
-    {id:"SLV",n:"El Salvador",f:"🇸🇻",fc:"sv",stickers:gen(881,20,["Escudo","Equipo","Castro","Domínguez","Acevedo","Rodríguez","Rivas","García","Góchez","Tamacas","Hérculez","Rugamas","Cartagena","Martínez","Monge","Larin","Lara","Recinos","Turcios","Portillo","Melgar"])},
-    {id:"ESP3",n:"Especiales",f:"⭐",fc:"",stickers:genEsp(20)}
+  {g:"Grupo I",teams:[
+    {id:"FRA",n:"Francia",f:"🇫🇷",fc:"fr",stickers:gen(661,20,["Equipo","Escudo","Maignan","Samba","Digne","Gusto","Theo H.","Lucas H.","Konaté","Koundé","Saliba","Upamecano","Kanté","Tchouaméni","Rabiot","Zaïre-Emery","Mbappé","Dembélé","Thuram M.","Olise"])},
+    {id:"SEN",n:"Senegal",f:"🇸🇳",fc:"sn",stickers:gen(681,20,["Equipo","Escudo","Mendy E.","Diouf Y.","Diatta K.","Koulibaly","Niakhate","Diouf M.","Seck","Jakobs","Mbaw","Gueye I.","Gueye P.","Camara L.","Diarra H.","Sarr P.","Mané","Sarr I.","Jackson N.","Ndiaye I."])},
+    {id:"IRQ",n:"Irak",f:"🇮🇶",fc:"iq",stickers:gen(701,20,["Equipo","Escudo","Talib","Hassan J.","Sulaka","Hussein A.","Tahseen","Hashim A.","Younis M.","Doski","Putros F.","Amyn","Bayesh","Iqbal Z.","Al-Ammari","Yakob K.","Al-Hamadi","Mohanad A.","Qasem A.","Jasim A."])},
+    {id:"NOR",n:"Noruega",f:"🇳🇴",fc:"no",stickers:gen(721,20,["Equipo","Escudo","Nyland","Selvik","Ryerson","Pedersen M.","Wolfe","Bjørkan","Ajer","Heggem","Ødegaard","Berge","Aursnes","Thorstvedt","Thorsby","Aasgaard","Haaland","Sørloth","Strand Larsen","Nusa"])}
+  ]},
+  {g:"Grupo J",teams:[
+    {id:"ARG",n:"Argentina",f:"🇦🇷",fc:"ar",stickers:gen(741,20,["Equipo","Escudo","E.Martínez","Musso","Balerdi","Montiel","Lis.Martínez","Romero","Otamendi","Medina F.","Molina","Tagliafico","de Paul","Mac Allister","E.Fernández","Paredes","Lo Celso","Messi","L.Álvarez","Laut.Martínez"])},
+    {id:"ALG",n:"Argelia",f:"🇩🇿",fc:"dz",stickers:gen(761,20,["Equipo","Escudo","Zidane L.","Benbot","Mandi","Bensebaini","Ait-Nouri","Tougai","Hadjam","Belghali","Bentaleb","Zerrouki","Boudaoui","Chaibi","Aouar","Maza I.","Mahrez","Amoura","Gouiri","Ghedjemis"])},
+    {id:"AUT",n:"Austria",f:"🇦🇹",fc:"at",stickers:gen(781,20,["Equipo","Escudo","Schlager A.","Wiegele","Pentz","Danso","Posch","Alaba","Lienhart","Friedl","Schlager X.","Seiwald","Sabitzer","Grillitsch","Baumgartner","Laimer","Wimmer","Arnautovic","Gregoritsch","Kalajdžić"])},
+    {id:"JOR",n:"Jordania",f:"🇯🇴",fc:"jo",stickers:gen(801,20,["Equipo","Escudo","Abulaila","Bani Attiah","Abu Hashish","Nasib","Abu Dahab","Al-Arab","Abualnadi","Obaid","Al-Rosan","Jamous","Olwan A.","Ayed R.","Sadeh I.","Abu Taha","Al-Rashdan","Al-Tamari","Azaizeh","Al-Mardi"])}
+  ]},
+  {g:"Grupo K",teams:[
+    {id:"POR",n:"Portugal",f:"🇵🇹",fc:"pt",stickers:gen(821,20,["Equipo","Escudo","D.Costa","Sá J.","Cancelo","Dalot","Semedo N.","Mendes N.","Dias R.","Inácio","Neves R.","Neves J.","Vitinha","B.Fernandes","B.Silva","Ronaldo","Félix J.","Leão","F.Conceição","Guedes"])},
+    {id:"COD",n:"RD Congo",f:"🇨🇩",fc:"cd",stickers:gen(841,20,["Equipo","Escudo","Mpasi","Epolo","Mbemba","Masuaku","Kalulu G.","Kayembe J.","Batubinsika","Tuanzebe","Wan-Bissaka","Elia","Moutoussamy","Kayembe E.","Pickel","Kakuta","Sadiki","Mbuku","Bakambu","Wissa"])},
+    {id:"UZB",n:"Uzbekistán",f:"🇺🇿",fc:"uz",stickers:gen(861,20,["Equipo","Escudo","Yusupov","Nematov","Khusanov","Alijonov","Sayfiev","Ashurmatov","Nasrullaev","Eshmurodov","Mozgovoy","Shukurov","Iskanderov","Masharipov","Urunov","Hamdamov","Fayzullaev","Shomurodov","Amonov","Sergeev"])},
+    {id:"COL",n:"Colombia",f:"🇨🇴",fc:"co",stickers:gen(881,20,["Equipo","Escudo","Vargas C.","Montero A.","Sánchez D.","Lucumí","Mina Y.","Ditta","Muñoz D.","Arias S.","Mojica","Rios R.","Lerma","Castaño K.","Quintero","Rodríguez J.","Arias J.","Carrascal","L.Díaz","Durán"])}
+  ]},
+  {g:"Grupo L",teams:[
+    {id:"ENG",n:"Inglaterra",f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",fc:"gb-eng",stickers:gen(901,20,["Equipo","Escudo","Pickford","Henderson D.","James R.","Stones","Guehi","Konsa","Burn","Quansah","Rice","Bellingham","Mainoo","Anderson E.","Rogers M.","Eze","Saka","Kane","Watkins","Rashford"])},
+    {id:"CRO",n:"Croacia",f:"🇭🇷",fc:"hr",stickers:gen(921,20,["Equipo","Escudo","Livaković","Kotarski","Gvardiol","Caleta-Car","Šutalo","Stanišić","Pongračić","Erlić","Modrić","Kovačić","Pašalić","Vlašić","Baturina","Šućić L.","Jakić","Perišić","Kramarić","Budimir"])},
+    {id:"GHA",n:"Ghana",f:"🇬🇭",fc:"gh",stickers:gen(941,20,["Equipo","Escudo","Ati-Zigi","Anang","Seidu","Mensah G.","Mumin","Opoku","Baba A.","Adjetey","Partey","Semenyo","Owusu","Boakye","Yirenkyi","Fatawu","Ayew J.","Thomas-A.","Sulemana","I.Williams"])},
+    {id:"PAN",n:"Panamá",f:"🇵🇦",fc:"pa",stickers:gen(961,20,["Equipo","Escudo","Mosquera","Mejía","Blackman","Gutiérrez J.","Murillo A.","Escobar","Andrade","Córdoba J.","Davis E.","Godoy","Harvey","Martínez C.","Rodríguez J.","Yanis","Bárcenas","Carrasquilla","Díaz I.","Waterman C."])}
+  ]},
+  {g:"Extra (1:100 sobres)",teams:[
+    {id:"EXT",n:"Extra Stickers",f:"⭐",fc:"",stickers:genExtra()}
+  ]},
+  {g:"Coca-Cola x Panini",teams:[
+    {id:"CCO",n:"Coca-Cola Edition",f:"🥤",fc:"",stickers:genCC()}
   ]}
 ];
 
-const TOTAL = 980;
+const TOTAL = 1012; // 20 FWC (00+FWC1-19) + 48 equipos×20 (960) + 20 Extra + 12 Coca-Cola
 let state = {};
 let ctxTarget = {num: null, teamId: null};
 let touchTimer = null;
 let allExpanded = false;
 
 function loadState() {
-  try { const s = localStorage.getItem('panini2026v3'); if(s) state = JSON.parse(s); } catch(e){}
+  try { const s = localStorage.getItem('panini2026v4'); if(s) state = JSON.parse(s); } catch(e){}
 }
 function saveState() {
-  try { localStorage.setItem('panini2026v3', JSON.stringify(state)); } catch(e){}
+  try { localStorage.setItem('panini2026v4', JSON.stringify(state)); } catch(e){}
 }
 function getS(num) { return state[num] || {p:false,r:0}; }
 function countPeg() { return Object.values(state).filter(v=>v.p).length; }
@@ -657,7 +703,7 @@ function renderTeam(team) {
       ontouchstart="touchStart(event,'${s.n}','${team.id}')"
       ontouchend="touchEnd()">
       <span class="s-check">✓</span>
-      <span class="s-num">${s.n}</span>
+      <span class="s-num">${s.d || s.n}</span>
       <span class="s-lbl">${s.l}</span>
       ${st.r>0?`<span class="rep-badge">${st.r}</span>`:''}
     </div>`;
@@ -743,7 +789,7 @@ function openCtxSheet(num, teamId) {
   const s = getS(num);
   const team = findTeam(teamId);
   const sticker = team ? team.stickers.find(s=>s.n===num) : null;
-  document.getElementById('ctxTitle').innerHTML = `<span class="ctx-num">#${num}</span> ${sticker?sticker.l:''}`;
+  document.getElementById('ctxTitle').innerHTML = `<span class="ctx-num">#${sticker?sticker.d||num:num}</span> ${sticker?sticker.l:''}`;
   document.getElementById('repVal').textContent = s.r || 0;
   document.getElementById('ctxOverlay').classList.add('show');
 }
