@@ -465,12 +465,130 @@ body {
   .ctx-overlay { align-items: center; }
   .ctx-sheet { border-radius: 20px; margin: auto; max-width: 360px; }
 }
+
+/* PERFILES */
+.prof-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--azul-noche);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 1.5rem; overflow-y: auto;
+}
+.prof-logo { font-size: 48px; margin-bottom: 6px; }
+.prof-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px; font-weight: 800;
+  color: var(--dorado); text-transform: uppercase;
+  text-align: center; line-height: 1.1; margin-bottom: 4px;
+}
+.prof-sub { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 1.5rem; text-align: center; }
+.prof-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; width: 100%; max-width: 360px; margin-bottom: 12px;
+}
+.prof-card {
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.13);
+  border-radius: 14px; padding: 14px 10px;
+  cursor: pointer; text-align: center;
+  transition: all .2s; position: relative;
+}
+.prof-card:active { transform: scale(.94); }
+.prof-card:hover { background: rgba(255,255,255,0.13); border-color: var(--dorado); }
+.prof-avatar { font-size: 34px; display: block; margin-bottom: 6px; }
+.prof-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px; font-weight: 700; color: #fff;
+  text-transform: uppercase; letter-spacing: .03em;
+}
+.prof-pct { font-size: 11px; color: var(--dorado); margin-top: 3px; }
+.prof-del {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(220,38,38,0.25); border: none;
+  color: #f87171; border-radius: 50%;
+  width: 20px; height: 20px; font-size: 11px;
+  cursor: pointer; opacity: 0; transition: opacity .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.prof-card:hover .prof-del { opacity: 1; }
+.prof-add-btn {
+  width: 100%; max-width: 360px;
+  background: rgba(245,197,24,0.08);
+  border: 1.5px dashed var(--dorado);
+  border-radius: 14px; padding: 13px;
+  color: var(--dorado); cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px; font-weight: 700;
+  transition: background .2s;
+}
+.prof-add-btn:hover { background: rgba(245,197,24,0.16); }
+.prof-form {
+  display: none; gap: 8px;
+  width: 100%; max-width: 360px; margin-bottom: 8px;
+}
+.prof-input {
+  flex: 1; padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.07);
+  color: #fff; font-family: 'Inter', sans-serif;
+  font-size: 14px; outline: none;
+}
+.prof-input:focus { border-color: var(--dorado); }
+.prof-input::placeholder { color: rgba(255,255,255,0.35); }
+.prof-create-btn {
+  padding: 11px 18px; background: var(--dorado);
+  color: #000; border: none; border-radius: 10px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 800; cursor: pointer;
+}
+/* Badge perfil activo en header */
+.prof-badge {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: .65rem;
+}
+.prof-badge-info { display: flex; align-items: center; gap: 7px; }
+.prof-badge-avatar { font-size: 20px; }
+.prof-badge-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700; color: var(--dorado);
+  text-transform: uppercase;
+}
+.prof-switch-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.8); padding: 5px 11px;
+  border-radius: 8px; font-size: 12px;
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  transition: background .2s;
+}
+.prof-switch-btn:hover { background: rgba(255,255,255,0.18); }
 </style>
 </head>
 <body>
 
+<div class="prof-overlay" id="profOverlay">
+  <div class="prof-logo">🏆</div>
+  <div class="prof-title">Álbum Panini<br>FIFA World Cup 2026</div>
+  <div class="prof-sub">¿Quién va a completar el álbum?</div>
+  <div class="prof-grid" id="profGrid"></div>
+  <div class="prof-form" id="profForm">
+    <input type="text" class="prof-input" id="profInput" placeholder="Tu nombre..." maxlength="14">
+    <button class="prof-create-btn" onclick="createProfile()">OK</button>
+  </div>
+  <button class="prof-add-btn" id="profAddBtn" onclick="showProfForm()">+ Nuevo perfil</button>
+</div>
+
 <div class="hero">
   <div class="hero-content">
+    <div class="prof-badge" id="profBadge" style="display:none">
+      <div class="prof-badge-info">
+        <span class="prof-badge-avatar" id="profBadgeAvatar"></span>
+        <span class="prof-badge-name" id="profBadgeName"></span>
+      </div>
+      <button class="prof-switch-btn" onclick="switchProfile()">Cambiar perfil</button>
+    </div>
     <div class="hero-top">
       <span class="trophy">🏆</span>
       <h1>Álbum Panini<br><span>FIFA World Cup 2026</span></h1>
@@ -662,11 +780,109 @@ let ctxTarget = {num: null, teamId: null};
 let touchTimer = null;
 let allExpanded = false;
 
+// PERFILES
+const PROF_INDEX = 'panini2026_perfiles';
+const PROF_SESSION = 'panini2026_activo';
+const AVATARS = ['⚽','🏆','⭐','🔥','💫','🦁','🐯','🦊','🌟','🎯','🎪','🚀'];
+let currentProfile = null;
+
+function getProfiles() {
+  try { return JSON.parse(localStorage.getItem(PROF_INDEX)) || []; } catch(e) { return []; }
+}
+function saveProfiles(p) { localStorage.setItem(PROF_INDEX, JSON.stringify(p)); }
+
+function profStateKey(name) { return 'panini2026v4_' + name; }
+
+function getProfilePct(name) {
+  try {
+    const s = JSON.parse(localStorage.getItem(profStateKey(name))) || {};
+    return Math.round(Object.values(s).filter(v=>v.p).length / TOTAL * 100);
+  } catch(e) { return 0; }
+}
+
+function renderProfiles() {
+  const profiles = getProfiles();
+  const grid = document.getElementById('profGrid');
+  grid.innerHTML = profiles.map((p, i) => `
+    <div class="prof-card" onclick="selectProfile('${p.name.replace(/'/g,"\\'")}')">
+      <button class="prof-del" onclick="event.stopPropagation();deleteProfile(${i})" title="Eliminar">✕</button>
+      <span class="prof-avatar">${p.avatar}</span>
+      <div class="prof-name">${p.name}</div>
+      <div class="prof-pct">${getProfilePct(p.name)}% completado</div>
+    </div>
+  `).join('');
+}
+
+function showProfForm() {
+  document.getElementById('profForm').style.display = 'flex';
+  document.getElementById('profAddBtn').style.display = 'none';
+  document.getElementById('profInput').focus();
+}
+
+function createProfile() {
+  const input = document.getElementById('profInput');
+  const name = input.value.trim();
+  if(!name) return;
+  const profiles = getProfiles();
+  if(profiles.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+    showToast('⚠ Ese nombre ya existe');
+    return;
+  }
+  const avatar = AVATARS[profiles.length % AVATARS.length];
+  profiles.push({name, avatar});
+  saveProfiles(profiles);
+  input.value = '';
+  document.getElementById('profForm').style.display = 'none';
+  document.getElementById('profAddBtn').style.display = 'block';
+  renderProfiles();
+  selectProfile(name);
+}
+
+function deleteProfile(index) {
+  if(!confirm('¿Eliminar este perfil y todo su progreso?')) return;
+  const profiles = getProfiles();
+  const name = profiles[index].name;
+  profiles.splice(index, 1);
+  saveProfiles(profiles);
+  localStorage.removeItem(profStateKey(name));
+  renderProfiles();
+}
+
+function selectProfile(name) {
+  const profiles = getProfiles();
+  const p = profiles.find(x => x.name === name);
+  currentProfile = name;
+  sessionStorage.setItem(PROF_SESSION, name);
+  document.getElementById('profOverlay').style.display = 'none';
+  document.getElementById('profBadge').style.display = 'flex';
+  document.getElementById('profBadgeAvatar').textContent = p ? p.avatar : '⚽';
+  document.getElementById('profBadgeName').textContent = name;
+  loadState(); renderAll(); updateStats();
+}
+
+function switchProfile() {
+  currentProfile = null;
+  state = {};
+  sessionStorage.removeItem(PROF_SESSION);
+  document.getElementById('profBadge').style.display = 'none';
+  document.getElementById('profOverlay').style.display = 'flex';
+  renderProfiles();
+  const profiles = getProfiles();
+  if(profiles.length === 0) showProfForm();
+}
+
 function loadState() {
-  try { const s = localStorage.getItem('panini2026v4'); if(s) state = JSON.parse(s); } catch(e){}
+  try {
+    const key = currentProfile ? profStateKey(currentProfile) : 'panini2026v4';
+    const s = localStorage.getItem(key);
+    if(s) state = JSON.parse(s); else state = {};
+  } catch(e) { state = {}; }
 }
 function saveState() {
-  try { localStorage.setItem('panini2026v4', JSON.stringify(state)); } catch(e){}
+  try {
+    const key = currentProfile ? profStateKey(currentProfile) : 'panini2026v4';
+    localStorage.setItem(key, JSON.stringify(state));
+  } catch(e) {}
 }
 function getS(num) { return state[num] || {p:false,r:0}; }
 function countPeg() { return Object.values(state).filter(v=>v.p).length; }
@@ -875,7 +1091,16 @@ function showToast(msg) {
   toastTimer = setTimeout(()=>t.classList.remove('show'), 2000);
 }
 
-loadState(); renderAll(); updateStats();
+// Inicializar con perfil
+document.getElementById('profInput').addEventListener('keydown', e => { if(e.key==='Enter') createProfile(); });
+renderProfiles();
+const _savedProf = sessionStorage.getItem(PROF_SESSION);
+if(_savedProf && getProfiles().some(p=>p.name===_savedProf)) {
+  selectProfile(_savedProf);
+} else {
+  const _profiles = getProfiles();
+  if(_profiles.length === 0) showProfForm();
+}
 </script>
 </body>
 </html>
