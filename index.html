@@ -564,20 +564,264 @@ body {
   transition: background .2s;
 }
 .prof-switch-btn:hover { background: rgba(255,255,255,0.18); }
+
+/* FAMILIA */
+.fam-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: var(--azul-noche);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.fam-top {
+  display: flex; align-items: center; gap: 10px;
+  padding: .9rem 1rem .5rem;
+  position: sticky; top: 0;
+  background: var(--azul-noche); z-index: 1;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.fam-back {
+  background: rgba(255,255,255,0.09); border: none;
+  color: #fff; padding: 6px 13px; border-radius: 8px;
+  font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif;
+}
+.fam-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 21px; font-weight: 800;
+  color: var(--dorado); text-transform: uppercase;
+}
+.fam-section {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700; letter-spacing: .06em;
+  color: rgba(255,255,255,0.4); text-transform: uppercase;
+  padding: .8rem 1rem .25rem;
+}
+.fam-rows { display: flex; flex-direction: column; gap: 7px; padding: 0 1rem; }
+.fam-row {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px; padding: 11px 13px;
+  display: flex; align-items: center; gap: 11px;
+}
+.fam-row-av { font-size: 24px; }
+.fam-row-info { flex: 1; min-width: 0; }
+.fam-row-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700;
+  color: #fff; text-transform: uppercase;
+}
+.fam-row-sub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.fam-minibar {
+  width: 60px; height: 5px;
+  background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;
+}
+.fam-minibar-fill { height: 100%; background: var(--dorado); border-radius: 3px; }
+/* Trade picker */
+.fam-trade-box {
+  margin: 8px 1rem 0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px; padding: 13px;
+}
+.fam-pick-label { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 6px; letter-spacing:.04em; text-transform:uppercase; }
+.fam-pick-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+.fam-pick-chip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 11px; border-radius: 9px;
+  border: 1.5px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: #fff; cursor: pointer; font-size: 12px;
+  font-family: 'Inter', sans-serif; transition: all .15s;
+}
+.fam-pick-chip.sel-a { border-color: #60a5fa; background: rgba(96,165,250,.18); color:#93c5fd; }
+.fam-pick-chip.sel-b { border-color: #34d399; background: rgba(52,211,153,.18); color:#6ee7b7; }
+.fam-results { margin-top: 10px; }
+.fam-res-block { margin-bottom: 10px; }
+.fam-res-head { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+.fam-res-head span { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.45); margin-left: 5px; }
+.fam-tags { display: flex; flex-wrap: wrap; gap: 5px; max-height: 120px; overflow-y: auto; }
+.fam-tag {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 6px; padding: 4px 8px;
+  font-size: 11px; color: rgba(255,255,255,0.75);
+  white-space: nowrap;
+}
+.fam-no-trade { font-size: 12px; color: rgba(255,255,255,0.3); font-style: italic; }
+.fam-hint { font-size: 12px; color: rgba(255,255,255,0.3); text-align: center; padding: 10px; }
+/* Familia btn */
+.fam-btn {
+  background: rgba(245,197,24,0.12);
+  border: 1px solid rgba(245,197,24,0.3);
+  color: var(--dorado); padding: 5px 11px;
+  border-radius: 8px; font-size: 12px;
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  transition: background .2s;
+}
+.fam-btn:hover { background: rgba(245,197,24,0.22); }
+
+/* PIN */
+.pin-boxes { display: flex; gap: 10px; justify-content: center; }
+.pin-box {
+  width: 52px; height: 60px;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 13px; font-size: 26px; font-weight: 800;
+  color: #fff; text-align: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  outline: none; caret-color: transparent;
+  -moz-appearance: textfield; appearance: textfield;
+}
+.pin-box::-webkit-outer-spin-button,
+.pin-box::-webkit-inner-spin-button { -webkit-appearance: none; }
+.pin-box:focus { border-color: var(--dorado); background: rgba(245,197,24,0.08); }
+.pin-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.pin-modal {
+  background: #16213a; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 22px; padding: 2rem 1.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  width: 100%; max-width: 300px;
+}
+.pin-modal-av { font-size: 46px; }
+.pin-modal-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px; font-weight: 800; color: #fff; text-transform: uppercase;
+}
+.pin-modal-sub { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 4px; }
+.pin-error { font-size: 13px; color: #f87171; min-height: 18px; text-align: center; }
+.pin-cancel {
+  background: rgba(255,255,255,0.08); border: none;
+  color: rgba(255,255,255,0.45); padding: 8px 22px;
+  border-radius: 9px; font-size: 13px; cursor: pointer;
+  font-family: 'Inter', sans-serif; margin-top: 4px;
+}
+/* PIN en formulario de creación */
+.pin-create-section {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  width: 100%;
+}
+/* ADMIN */
+.admin-access-link {
+  margin-top: 14px; font-size: 12px;
+  color: rgba(255,255,255,0.25); background: none; border: none;
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.admin-access-link:hover { color: rgba(255,255,255,0.5); }
+.admin-row {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 12px 13px; margin: 0 1rem 7px;
+}
+.admin-row-av { font-size: 24px; }
+.admin-row-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700; color: #fff;
+  text-transform: uppercase; flex: 1;
+}
+.admin-pin-wrap { display: flex; align-items: center; gap: 6px; }
+.admin-pin-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--dorado); letter-spacing: .1em; min-width: 52px;
+}
+.admin-icon-btn {
+  background: rgba(255,255,255,0.08); border: none;
+  color: rgba(255,255,255,0.6); border-radius: 7px;
+  width: 30px; height: 30px; font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.admin-icon-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.admin-footer { padding: 1rem; margin-top: 4px; }
+.admin-footer-btn {
+  width: 100%; padding: 11px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 11px; color: rgba(255,255,255,0.6);
+  font-family: 'Inter', sans-serif; font-size: 13px;
+  cursor: pointer; text-align: center;
+}
+.admin-footer-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.pin-create-label {
+  font-size: 11px; color: rgba(255,255,255,0.4);
+  text-transform: uppercase; letter-spacing: .05em;
+}
 </style>
 </head>
 <body>
+
+<div class="fam-overlay" id="famOverlay" style="display:none">
+  <div class="fam-top">
+    <button class="fam-back" onclick="closeFamilia()">← Volver</button>
+    <span class="fam-heading">👥 Álbum de Amigos</span>
+  </div>
+  <div class="fam-section">Progreso</div>
+  <div class="fam-rows" id="famRows"></div>
+  <div id="famTradeSection">
+    <div class="fam-section">🔄 Intercambiar láminas</div>
+    <div class="fam-trade-box">
+      <div class="fam-pick-label">Seleccioná dos personas para ver qué se pueden intercambiar</div>
+      <div class="fam-pick-row" id="famPickRow"></div>
+      <div class="fam-results" id="famResults">
+        <div class="fam-hint">Tocá dos nombres para ver los intercambios posibles</div>
+      </div>
+    </div>
+  </div>
+  <div style="height:1.5rem"></div>
+</div>
+
+<div class="pin-overlay" id="pinOverlay" style="display:none">
+  <div class="pin-modal">
+    <div class="pin-modal-av" id="pinModalAv"></div>
+    <div class="pin-modal-name" id="pinModalName"></div>
+    <div class="pin-modal-sub" id="pinModalSub">Ingresá tu PIN</div>
+    <div class="pin-boxes" id="pinEntryBoxes">
+      <input class="pin-box" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]">
+      <input class="pin-box" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]">
+      <input class="pin-box" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]">
+      <input class="pin-box" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]">
+    </div>
+    <div class="pin-error" id="pinError"></div>
+    <button class="pin-cancel" onclick="closePinEntry()">Cancelar</button>
+  </div>
+</div>
 
 <div class="prof-overlay" id="profOverlay">
   <div class="prof-logo">🏆</div>
   <div class="prof-title">Álbum Panini<br>FIFA World Cup 2026</div>
   <div class="prof-sub">¿Quién va a completar el álbum?</div>
   <div class="prof-grid" id="profGrid"></div>
-  <div class="prof-form" id="profForm">
-    <input type="text" class="prof-input" id="profInput" placeholder="Tu nombre..." maxlength="14">
-    <button class="prof-create-btn" onclick="createProfile()">OK</button>
+  <div class="prof-form" id="profForm" style="flex-direction:column;align-items:center;gap:10px">
+    <input type="text" class="prof-input" id="profInput" placeholder="Tu nombre..." maxlength="14" style="width:100%;box-sizing:border-box">
+    <div class="pin-create-section">
+      <div class="pin-create-label">🔒 PIN de 4 dígitos</div>
+      <div class="pin-boxes" id="pinCreateBoxes">
+        <input class="pin-box" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="pin-box" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="pin-box" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="pin-box" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]">
+      </div>
+    </div>
+    <button class="prof-create-btn" onclick="createProfile()" style="width:100%">Crear perfil</button>
   </div>
   <button class="prof-add-btn" id="profAddBtn" onclick="showProfForm()">+ Nuevo perfil</button>
+  <button class="admin-access-link" onclick="requestAdminAccess()">🔧 Administrador</button>
+</div>
+
+<div class="fam-overlay" id="adminOverlay" style="display:none">
+  <div class="fam-top">
+    <button class="fam-back" onclick="closeAdmin()">← Volver</button>
+    <span class="fam-heading">🔧 Administrador</span>
+  </div>
+  <div class="fam-section">Perfiles y claves</div>
+  <div id="adminList"></div>
+  <div class="admin-footer">
+    <button class="admin-footer-btn" onclick="changeAdminPinAction()">🔒 Cambiar PIN de administrador</button>
+  </div>
 </div>
 
 <div class="hero">
@@ -587,7 +831,10 @@ body {
         <span class="prof-badge-avatar" id="profBadgeAvatar"></span>
         <span class="prof-badge-name" id="profBadgeName"></span>
       </div>
-      <button class="prof-switch-btn" onclick="switchProfile()">Cambiar perfil</button>
+      <div style="display:flex;gap:6px">
+        <button class="fam-btn" onclick="openFamilia()">👥 Amigos</button>
+        <button class="prof-switch-btn" onclick="switchProfile()">Cambiar</button>
+      </div>
     </div>
     <div class="hero-top">
       <span class="trophy">🏆</span>
@@ -780,6 +1027,114 @@ let ctxTarget = {num: null, teamId: null};
 let touchTimer = null;
 let allExpanded = false;
 
+// FAMILIA
+function getProfileState(name) {
+  try { return JSON.parse(localStorage.getItem(profStateKey(name))) || {}; } catch(e) { return {}; }
+}
+function getStickerInfo(n) {
+  for(const g of EQUIPOS) {
+    for(const t of g.teams) {
+      const s = t.stickers.find(st => st.n === n);
+      if(s) return {teamId: t.id, teamName: t.n, d: s.d || s.n, l: s.l};
+    }
+  }
+  return null;
+}
+let famPickA = null, famPickB = null;
+
+function openFamilia() {
+  famPickA = null; famPickB = null;
+  document.getElementById('famOverlay').style.display = 'flex';
+  renderFamiliaRows();
+  renderFamiliaTradeChips();
+  document.getElementById('famResults').innerHTML = '<div class="fam-hint">Tocá dos nombres para ver los intercambios posibles</div>';
+}
+function closeFamilia() {
+  document.getElementById('famOverlay').style.display = 'none';
+}
+function renderFamiliaRows() {
+  const profiles = getProfiles();
+  document.getElementById('famRows').innerHTML = profiles.map(p => {
+    const st = getProfileState(p.name);
+    const peg = Object.values(st).filter(v => v.p).length;
+    const rep = Object.values(st).reduce((a, v) => a + (v.r || 0), 0);
+    const pct = Math.round(peg / TOTAL * 100);
+    return `<div class="fam-row">
+      <span class="fam-row-av">${p.avatar}</span>
+      <div class="fam-row-info">
+        <div class="fam-row-name">${p.name}</div>
+        <div class="fam-row-sub">${peg} pegadas · ${rep} repetidas disponibles</div>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--dorado);text-align:right">${pct}%</div>
+        <div class="fam-minibar"><div class="fam-minibar-fill" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderFamiliaTradeChips() {
+  const profiles = getProfiles();
+  if(profiles.length < 2) {
+    document.getElementById('famTradeSection').style.display = 'none';
+    return;
+  }
+  document.getElementById('famTradeSection').style.display = 'block';
+  document.getElementById('famPickRow').innerHTML = profiles.map(p =>
+    `<button class="fam-pick-chip" id="chip_${p.name}" onclick="toggleFamPick('${p.name.replace(/'/g,"\\'")}')">
+      ${p.avatar} ${p.name}
+    </button>`
+  ).join('');
+}
+function toggleFamPick(name) {
+  if(famPickA === name) { famPickA = null; }
+  else if(famPickB === name) { famPickB = null; }
+  else if(!famPickA) { famPickA = name; }
+  else if(!famPickB) { famPickB = name; }
+  else { famPickB = name; }
+  getProfiles().forEach(p => {
+    const chip = document.getElementById('chip_' + p.name);
+    if(!chip) return;
+    chip.classList.remove('sel-a', 'sel-b');
+    if(p.name === famPickA) chip.classList.add('sel-a');
+    if(p.name === famPickB) chip.classList.add('sel-b');
+  });
+  if(famPickA && famPickB) renderTrades();
+  else document.getElementById('famResults').innerHTML = '<div class="fam-hint">Tocá dos nombres para ver los intercambios posibles</div>';
+}
+function renderTrades() {
+  const stA = getProfileState(famPickA);
+  const stB = getProfileState(famPickB);
+  const aCanGive = [], bCanGive = [];
+  for(const [n, v] of Object.entries(stA)) {
+    if((v.r || 0) > 0 && (!stB[n] || !stB[n].p)) aCanGive.push({n, r: v.r});
+  }
+  for(const [n, v] of Object.entries(stB)) {
+    if((v.r || 0) > 0 && (!stA[n] || !stA[n].p)) bCanGive.push({n, r: v.r});
+  }
+  function tagsHtml(list) {
+    if(!list.length) return '<span class="fam-no-trade">Ninguna por ahora</span>';
+    return `<div class="fam-tags">${list.map(({n, r}) => {
+      const info = getStickerInfo(n);
+      const label = info ? `${info.teamId} #${info.d} ${info.l}` : `#${n}`;
+      return `<span class="fam-tag">${label}${r > 1 ? ' ×'+r : ''}</span>`;
+    }).join('')}</div>`;
+  }
+  document.getElementById('famResults').innerHTML = `
+    <div class="fam-res-block">
+      <div class="fam-res-head" style="color:#93c5fd">
+        ${famPickA} → ${famPickB} <span>${aCanGive.length} láminas</span>
+      </div>
+      ${tagsHtml(aCanGive)}
+    </div>
+    <div class="fam-res-block" style="margin-top:10px">
+      <div class="fam-res-head" style="color:#6ee7b7">
+        ${famPickB} → ${famPickA} <span>${bCanGive.length} láminas</span>
+      </div>
+      ${tagsHtml(bCanGive)}
+    </div>
+  `;
+}
+
 // PERFILES
 const PROF_INDEX = 'panini2026_perfiles';
 const PROF_SESSION = 'panini2026_activo';
@@ -790,7 +1145,6 @@ function getProfiles() {
   try { return JSON.parse(localStorage.getItem(PROF_INDEX)) || []; } catch(e) { return []; }
 }
 function saveProfiles(p) { localStorage.setItem(PROF_INDEX, JSON.stringify(p)); }
-
 function profStateKey(name) { return 'panini2026v4_' + name; }
 
 function getProfilePct(name) {
@@ -800,12 +1154,188 @@ function getProfilePct(name) {
   } catch(e) { return 0; }
 }
 
+// ── PIN ──────────────────────────────────────────────────────────────
+function setupPinBoxes(containerId, onComplete) {
+  const boxes = [...document.querySelectorAll('#' + containerId + ' .pin-box')];
+  boxes.forEach((box, i) => {
+    box.addEventListener('input', () => {
+      box.value = box.value.replace(/\D/g, '').slice(-1);
+      if(box.value && i < boxes.length - 1) boxes[i + 1].focus();
+      if(i === boxes.length - 1 && box.value && onComplete) onComplete();
+    });
+    box.addEventListener('keydown', e => {
+      if(e.key === 'Backspace' && !box.value && i > 0) boxes[i - 1].focus();
+    });
+  });
+}
+
+function getPinFromBoxes(containerId) {
+  return [...document.querySelectorAll('#' + containerId + ' .pin-box')]
+    .map(b => b.value).join('');
+}
+
+function clearPinBoxes(containerId) {
+  document.querySelectorAll('#' + containerId + ' .pin-box').forEach(b => b.value = '');
+}
+
+const ADMIN_KEY = 'panini2026_adminpin';
+let pinTarget = null; // {name, action: 'enter'|'delete'|'admin'|'admin-change'|'admin-change-profile', index?, profileName?}
+let adminRevealState = {}; // {name: bool} — qué PINs están visibles en el admin
+
+function showPinEntry(name, action, index) {
+  const profiles = getProfiles();
+  const p = profiles.find(x => x.name === name);
+  if(!p || !p.pin) {
+    if(action === 'enter') { _enterProfile(name); return; }
+    if(action === 'delete') { _doDeleteProfile(index); return; }
+  }
+  pinTarget = {name, action, index};
+  document.getElementById('pinModalAv').textContent = p.avatar;
+  document.getElementById('pinModalName').textContent = name;
+  document.getElementById('pinModalSub').textContent =
+    action === 'delete' ? '⚠ PIN para eliminar perfil' : 'Ingresá tu PIN';
+  document.getElementById('pinError').textContent = '';
+  clearPinBoxes('pinEntryBoxes');
+  document.getElementById('pinOverlay').style.display = 'flex';
+  document.querySelector('#pinEntryBoxes .pin-box').focus();
+}
+
+function _showAdminPinEntry(action, extra) {
+  pinTarget = {name: '__admin__', action, ...extra};
+  document.getElementById('pinModalAv').textContent = '🔧';
+  document.getElementById('pinModalName').textContent = 'Admin';
+  document.getElementById('pinModalSub').textContent =
+    action === 'admin' ? 'PIN de administrador' : 'PIN actual de administrador';
+  document.getElementById('pinError').textContent = '';
+  clearPinBoxes('pinEntryBoxes');
+  document.getElementById('pinOverlay').style.display = 'flex';
+  document.querySelector('#pinEntryBoxes .pin-box').focus();
+}
+
+function closePinEntry() {
+  document.getElementById('pinOverlay').style.display = 'none';
+  pinTarget = null;
+}
+
+function checkPinEntry() {
+  const pin = getPinFromBoxes('pinEntryBoxes');
+  if(pin.length < 4) return;
+  const {action} = pinTarget;
+
+  // Casos admin
+  if(action === 'admin') {
+    const stored = localStorage.getItem(ADMIN_KEY);
+    if(pin !== stored) { _pinWrong(); return; }
+    closePinEntry();
+    openAdminPanel();
+    return;
+  }
+  if(action === 'admin-change') {
+    const stored = localStorage.getItem(ADMIN_KEY);
+    if(pin !== stored) { _pinWrong(); return; }
+    closePinEntry();
+    const np = prompt('Nuevo PIN de administrador (4 dígitos):');
+    if(np && /^\d{4}$/.test(np)) { localStorage.setItem(ADMIN_KEY, np); showToast('✅ PIN admin actualizado'); }
+    else if(np) showToast('⚠ PIN debe ser 4 dígitos');
+    return;
+  }
+
+  // Caso perfil
+  const profiles = getProfiles();
+  const p = profiles.find(x => x.name === pinTarget.name);
+  if(!p || pin !== p.pin) { _pinWrong(); return; }
+  const {name, index} = pinTarget;
+  closePinEntry();
+  if(action === 'enter') _enterProfile(name);
+  else if(action === 'delete') _doDeleteProfile(index);
+}
+
+function _pinWrong() {
+  document.getElementById('pinError').textContent = '❌ PIN incorrecto, intentá de nuevo';
+  clearPinBoxes('pinEntryBoxes');
+  document.querySelector('#pinEntryBoxes .pin-box').focus();
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────────────
+function requestAdminAccess() {
+  const stored = localStorage.getItem(ADMIN_KEY);
+  if(!stored) {
+    const np = prompt('Creá tu PIN de administrador (4 dígitos):');
+    if(!np) return;
+    if(!/^\d{4}$/.test(np)) { showToast('⚠ Debe ser exactamente 4 dígitos'); return; }
+    localStorage.setItem(ADMIN_KEY, np);
+    showToast('✅ PIN de admin creado');
+    openAdminPanel();
+  } else {
+    _showAdminPinEntry('admin', {});
+  }
+}
+
+function openAdminPanel() {
+  adminRevealState = {};
+  document.getElementById('profOverlay').style.display = 'none';
+  document.getElementById('adminOverlay').style.display = 'flex';
+  renderAdminList();
+}
+
+function closeAdmin() {
+  document.getElementById('adminOverlay').style.display = 'none';
+  document.getElementById('profOverlay').style.display = 'flex';
+}
+
+function renderAdminList() {
+  const profiles = getProfiles();
+  document.getElementById('adminList').innerHTML = profiles.length === 0
+    ? '<div class="fam-hint">No hay perfiles creados aún</div>'
+    : profiles.map((p, i) => {
+        const revealed = adminRevealState[p.name];
+        const pinDisplay = p.pin
+          ? (revealed ? `<span style="color:var(--dorado);letter-spacing:.1em">${p.pin}</span>` : '••••')
+          : '<span style="color:rgba(255,255,255,0.3);font-size:12px">sin PIN</span>';
+        return `<div class="admin-row">
+          <span class="admin-row-av">${p.avatar}</span>
+          <span class="admin-row-name">${p.name}</span>
+          <div class="admin-pin-wrap">
+            <span class="admin-pin-val">${pinDisplay}</span>
+            <button class="admin-icon-btn" onclick="adminToggleReveal('${p.name.replace(/'/g,"\\'")}',${i})" title="${revealed?'Ocultar':'Ver PIN'}">
+              ${revealed ? '🙈' : '👁'}
+            </button>
+            <button class="admin-icon-btn" onclick="adminChangePin('${p.name.replace(/'/g,"\\'")}',${i})" title="Cambiar PIN">✏️</button>
+          </div>
+        </div>`;
+      }).join('');
+}
+
+function adminToggleReveal(name, i) {
+  adminRevealState[name] = !adminRevealState[name];
+  renderAdminList();
+}
+
+function adminChangePin(name, i) {
+  const np = prompt(`Nuevo PIN para ${name} (4 dígitos):`);
+  if(!np) return;
+  if(!/^\d{4}$/.test(np)) { showToast('⚠ PIN debe ser 4 dígitos numéricos'); return; }
+  const profiles = getProfiles();
+  profiles[i].pin = np;
+  saveProfiles(profiles);
+  adminRevealState[name] = true;
+  renderAdminList();
+  showToast(`✅ PIN de ${name} actualizado`);
+}
+
+function changeAdminPinAction() {
+  const stored = localStorage.getItem(ADMIN_KEY);
+  if(!stored) { requestAdminAccess(); return; }
+  _showAdminPinEntry('admin-change', {});
+}
+
+// ── PERFIL ───────────────────────────────────────────────────────────
 function renderProfiles() {
   const profiles = getProfiles();
   const grid = document.getElementById('profGrid');
   grid.innerHTML = profiles.map((p, i) => `
-    <div class="prof-card" onclick="selectProfile('${p.name.replace(/'/g,"\\'")}')">
-      <button class="prof-del" onclick="event.stopPropagation();deleteProfile(${i})" title="Eliminar">✕</button>
+    <div class="prof-card" onclick="showPinEntry('${p.name.replace(/'/g,"\\'")}','enter',${i})">
+      <button class="prof-del" onclick="event.stopPropagation();showPinEntry('${p.name.replace(/'/g,"\\'")}','delete',${i})" title="Eliminar">✕</button>
       <span class="prof-avatar">${p.avatar}</span>
       <div class="prof-name">${p.name}</div>
       <div class="prof-pct">${getProfilePct(p.name)}% completado</div>
@@ -814,41 +1344,48 @@ function renderProfiles() {
 }
 
 function showProfForm() {
-  document.getElementById('profForm').style.display = 'flex';
+  const form = document.getElementById('profForm');
+  form.style.display = 'flex';
   document.getElementById('profAddBtn').style.display = 'none';
   document.getElementById('profInput').focus();
+  clearPinBoxes('pinCreateBoxes');
 }
 
 function createProfile() {
   const input = document.getElementById('profInput');
   const name = input.value.trim();
-  if(!name) return;
+  if(!name) { showToast('⚠ Ingresá un nombre'); return; }
+  const pin = getPinFromBoxes('pinCreateBoxes');
+  if(pin.length !== 4) { showToast('⚠ Completá los 4 dígitos del PIN'); return; }
   const profiles = getProfiles();
   if(profiles.some(p => p.name.toLowerCase() === name.toLowerCase())) {
     showToast('⚠ Ese nombre ya existe');
     return;
   }
   const avatar = AVATARS[profiles.length % AVATARS.length];
-  profiles.push({name, avatar});
+  profiles.push({name, avatar, pin});
   saveProfiles(profiles);
   input.value = '';
+  clearPinBoxes('pinCreateBoxes');
   document.getElementById('profForm').style.display = 'none';
   document.getElementById('profAddBtn').style.display = 'block';
   renderProfiles();
-  selectProfile(name);
+  _enterProfile(name);
 }
 
-function deleteProfile(index) {
-  if(!confirm('¿Eliminar este perfil y todo su progreso?')) return;
+function _doDeleteProfile(index) {
   const profiles = getProfiles();
+  if(index < 0 || index >= profiles.length) return;
   const name = profiles[index].name;
+  if(!confirm('¿Eliminar perfil de ' + name + '? No se puede deshacer.')) return;
   profiles.splice(index, 1);
   saveProfiles(profiles);
   localStorage.removeItem(profStateKey(name));
   renderProfiles();
+  showToast('🗑 Perfil eliminado');
 }
 
-function selectProfile(name) {
+function _enterProfile(name) {
   const profiles = getProfiles();
   const p = profiles.find(x => x.name === name);
   currentProfile = name;
@@ -859,6 +1396,8 @@ function selectProfile(name) {
   document.getElementById('profBadgeName').textContent = name;
   loadState(); renderAll(); updateStats();
 }
+
+function selectProfile(name) { _enterProfile(name); }
 
 function switchProfile() {
   currentProfile = null;
@@ -1092,11 +1631,13 @@ function showToast(msg) {
 }
 
 // Inicializar con perfil
-document.getElementById('profInput').addEventListener('keydown', e => { if(e.key==='Enter') createProfile(); });
+setupPinBoxes('pinCreateBoxes', null);
+setupPinBoxes('pinEntryBoxes', checkPinEntry);
+document.getElementById('profInput').addEventListener('keydown', e => { if(e.key==='Enter') { const p = getPinFromBoxes('pinCreateBoxes'); if(p.length===4) createProfile(); else document.querySelector('#pinCreateBoxes .pin-box').focus(); } });
 renderProfiles();
 const _savedProf = sessionStorage.getItem(PROF_SESSION);
 if(_savedProf && getProfiles().some(p=>p.name===_savedProf)) {
-  selectProfile(_savedProf);
+  _enterProfile(_savedProf);
 } else {
   const _profiles = getProfiles();
   if(_profiles.length === 0) showProfForm();
