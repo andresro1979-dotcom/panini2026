@@ -659,6 +659,28 @@ body {
 }
 .fam-btn:hover { background: rgba(245,197,24,0.22); }
 
+/* LOADING */
+.loading-overlay {
+  position: fixed; inset: 0; z-index: 10002;
+  background: rgba(8,16,38,0.9);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 14px;
+}
+.loading-spinner {
+  width: 44px; height: 44px;
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top-color: var(--dorado);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 600; letter-spacing: .05em;
+  color: rgba(255,255,255,0.55); text-transform: uppercase;
+}
+.prof-hint { font-size: 13px; color: rgba(255,255,255,0.35); text-align:center; padding:1rem; }
+
 /* PIN */
 .pin-boxes { display: flex; gap: 10px; justify-content: center; }
 .pin-box {
@@ -753,6 +775,11 @@ body {
 </style>
 </head>
 <body>
+
+<div class="loading-overlay" id="loadingOverlay" style="display:none">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">Cargando...</div>
+</div>
 
 <div class="fam-overlay" id="famOverlay" style="display:none">
   <div class="fam-top">
@@ -1027,15 +1054,115 @@ let ctxTarget = {num: null, teamId: null};
 let touchTimer = null;
 let allExpanded = false;
 
-// FAMILIA
-function getProfileState(name) {
-  try { return JSON.parse(localStorage.getItem(profStateKey(name))) || {}; } catch(e) { return {}; }
+// ── BASE DE DATOS: GAS (servidor) o localStorage (GitHub Pages) ───────
+const IS_GAS = typeof google !== 'undefined' && !!google.script;
+const PROF_INDEX  = 'panini2026_perfiles';
+const PROF_SESSION = 'panini2026_activo';
+const ADMIN_KEY   = 'panini2026_adminpin';
+const AVATARS     = ['⚽','🏆','⭐','🔥','💫','🦁','🐯','🦊','🌟','🎯','🎪','🚀'];
+let currentProfile = null;
+let _cachedProfiles = [];    // perfiles en memoria (nombre, avatar, pin)
+let _cachedPctMap   = {};    // {nombre: pegadas_count}
+let _stateCache     = {};    // {nombre: estadoObj} para panel de amigos
+let _saveTimer      = null;
+
+function profStateKey(n) { return 'panini2026v4_' + n; }
+
+function _gasRun(fn, args, ok, fail) {
+  const runner = google.script.run
+    .withSuccessHandler(ok || function(){})
+    .withFailureHandler(fail || function(e){ hideLoading(); showToast('❌ Error de conexión'); console.error(e); });
+  runner[fn].apply(runner, args || []);
 }
+
+const DB = {
+  getProfilesWithStats(cb) {
+    if(IS_GAS) { _gasRun('serverGetProfilesWithStats', [], cb); return; }
+    const profiles = JSON.parse(localStorage.getItem(PROF_INDEX) || '[]');
+    const pctMap = {};
+    profiles.forEach(p => {
+      try { pctMap[p.name] = Object.values(JSON.parse(localStorage.getItem(profStateKey(p.name)) || '{}')).filter(v=>v.p).length; }
+      catch(e) { pctMap[p.name] = 0; }
+    });
+    cb({profiles, pctMap});
+  },
+  createProfile(name, avatar, pin, cb) {
+    if(IS_GAS) { _gasRun('serverCreateProfile', [name, avatar, pin], cb); return; }
+    const list = JSON.parse(localStorage.getItem(PROF_INDEX) || '[]');
+    if(list.some(p => p.name.toLowerCase() === name.toLowerCase())) { cb({ok:false,msg:'Ese nombre ya existe'}); return; }
+    list.push({name, avatar, pin});
+    localStorage.setItem(PROF_INDEX, JSON.stringify(list));
+    cb({ok:true});
+  },
+  deleteProfile(name, cb) {
+    if(IS_GAS) { _gasRun('serverDeleteProfile', [name], cb); return; }
+    const list = JSON.parse(localStorage.getItem(PROF_INDEX) || '[]').filter(p=>p.name!==name);
+    localStorage.setItem(PROF_INDEX, JSON.stringify(list));
+    localStorage.removeItem(profStateKey(name));
+    cb({ok:true});
+  },
+  getState(name, cb) {
+    if(IS_GAS) {
+      _gasRun('serverGetState', [name], json => { try { cb(JSON.parse(json)||{}); } catch(e){ cb({}); } });
+      return;
+    }
+    try { cb(JSON.parse(localStorage.getItem(profStateKey(name)))||{}); } catch(e){ cb({}); }
+  },
+  saveState(name, st) {
+    clearTimeout(_saveTimer);
+    if(IS_GAS) {
+      _saveTimer = setTimeout(() => _gasRun('serverSaveState', [name, JSON.stringify(st)], null, ()=>showToast('⚠ Error al guardar')), 1500);
+    } else {
+      localStorage.setItem(profStateKey(name), JSON.stringify(st));
+    }
+  },
+  getAllStates(cb) {
+    if(IS_GAS) {
+      _gasRun('serverGetAllStates', [], raw => {
+        const result = {};
+        Object.entries(raw).forEach(([n,j]) => { try { result[n]=JSON.parse(j); } catch(e){ result[n]={}; } });
+        cb(result);
+      });
+      return;
+    }
+    const result = {};
+    JSON.parse(localStorage.getItem(PROF_INDEX)||'[]').forEach(p => {
+      try { result[p.name] = JSON.parse(localStorage.getItem(profStateKey(p.name))||'{}'); } catch(e){ result[p.name]={}; }
+    });
+    cb(result);
+  },
+  getAdminPin(cb) {
+    if(IS_GAS) { _gasRun('serverGetAdminPin', [], cb); return; }
+    cb(localStorage.getItem(ADMIN_KEY) || '');
+  },
+  setAdminPin(pin, cb) {
+    if(IS_GAS) { _gasRun('serverSetAdminPin', [pin], cb||function(){}); return; }
+    localStorage.setItem(ADMIN_KEY, pin);
+    if(cb) cb({ok:true});
+  },
+  updatePin(name, newPin, cb) {
+    if(IS_GAS) { _gasRun('serverUpdatePin', [name, newPin], cb||function(){}); return; }
+    const list = JSON.parse(localStorage.getItem(PROF_INDEX)||'[]');
+    const p = list.find(x=>x.name===name);
+    if(p) { p.pin=newPin; localStorage.setItem(PROF_INDEX,JSON.stringify(list)); }
+    if(cb) cb({ok:true});
+  }
+};
+
+function showLoading(txt) {
+  document.getElementById('loadingText').textContent = txt || 'Cargando...';
+  document.getElementById('loadingOverlay').style.display = 'flex';
+}
+function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+
+// ── FAMILIA ───────────────────────────────────────────────────────────
+function getProfileState(name) { return _stateCache[name] || {}; }
+
 function getStickerInfo(n) {
   for(const g of EQUIPOS) {
     for(const t of g.teams) {
       const s = t.stickers.find(st => st.n === n);
-      if(s) return {teamId: t.id, teamName: t.n, d: s.d || s.n, l: s.l};
+      if(s) return {teamId: t.id, d: s.d || s.n, l: s.l};
     }
   }
   return null;
@@ -1045,20 +1172,28 @@ let famPickA = null, famPickB = null;
 function openFamilia() {
   famPickA = null; famPickB = null;
   document.getElementById('famOverlay').style.display = 'flex';
-  renderFamiliaRows();
-  renderFamiliaTradeChips();
-  document.getElementById('famResults').innerHTML = '<div class="fam-hint">Tocá dos nombres para ver los intercambios posibles</div>';
+  document.getElementById('famRows').innerHTML = '<div class="prof-hint">Cargando datos...</div>';
+  showLoading('Cargando álbumes...');
+  DB.getProfilesWithStats(({profiles, pctMap}) => {
+    _cachedProfiles = profiles;
+    _cachedPctMap   = pctMap;
+    DB.getAllStates(allSt => {
+      hideLoading();
+      _stateCache = allSt;
+      renderFamiliaRows();
+      renderFamiliaTradeChips();
+      document.getElementById('famResults').innerHTML = '<div class="fam-hint">Tocá dos nombres para ver los intercambios posibles</div>';
+    });
+  });
 }
-function closeFamilia() {
-  document.getElementById('famOverlay').style.display = 'none';
-}
+function closeFamilia() { document.getElementById('famOverlay').style.display = 'none'; }
+
 function renderFamiliaRows() {
-  const profiles = getProfiles();
-  document.getElementById('famRows').innerHTML = profiles.map(p => {
-    const st = getProfileState(p.name);
-    const peg = Object.values(st).filter(v => v.p).length;
-    const rep = Object.values(st).reduce((a, v) => a + (v.r || 0), 0);
-    const pct = Math.round(peg / TOTAL * 100);
+  document.getElementById('famRows').innerHTML = _cachedProfiles.map(p => {
+    const st  = getProfileState(p.name);
+    const peg = Object.values(st).filter(v=>v.p).length;
+    const rep = Object.values(st).reduce((a,v)=>a+(v.r||0),0);
+    const pct = Math.round(peg/TOTAL*100);
     return `<div class="fam-row">
       <span class="fam-row-av">${p.avatar}</span>
       <div class="fam-row-info">
@@ -1073,356 +1208,259 @@ function renderFamiliaRows() {
   }).join('');
 }
 function renderFamiliaTradeChips() {
-  const profiles = getProfiles();
-  if(profiles.length < 2) {
-    document.getElementById('famTradeSection').style.display = 'none';
-    return;
-  }
+  if(_cachedProfiles.length < 2) { document.getElementById('famTradeSection').style.display='none'; return; }
   document.getElementById('famTradeSection').style.display = 'block';
-  document.getElementById('famPickRow').innerHTML = profiles.map(p =>
-    `<button class="fam-pick-chip" id="chip_${p.name}" onclick="toggleFamPick('${p.name.replace(/'/g,"\\'")}')">
-      ${p.avatar} ${p.name}
-    </button>`
+  document.getElementById('famPickRow').innerHTML = _cachedProfiles.map(p =>
+    `<button class="fam-pick-chip" id="chip_${p.name}" onclick="toggleFamPick('${esc(p.name)}')">${p.avatar} ${p.name}</button>`
   ).join('');
 }
 function toggleFamPick(name) {
-  if(famPickA === name) { famPickA = null; }
-  else if(famPickB === name) { famPickB = null; }
-  else if(!famPickA) { famPickA = name; }
-  else if(!famPickB) { famPickB = name; }
-  else { famPickB = name; }
-  getProfiles().forEach(p => {
-    const chip = document.getElementById('chip_' + p.name);
+  if(famPickA===name) famPickA=null;
+  else if(famPickB===name) famPickB=null;
+  else if(!famPickA) famPickA=name;
+  else if(!famPickB) famPickB=name;
+  else famPickB=name;
+  _cachedProfiles.forEach(p => {
+    const chip = document.getElementById('chip_'+p.name);
     if(!chip) return;
-    chip.classList.remove('sel-a', 'sel-b');
-    if(p.name === famPickA) chip.classList.add('sel-a');
-    if(p.name === famPickB) chip.classList.add('sel-b');
+    chip.classList.remove('sel-a','sel-b');
+    if(p.name===famPickA) chip.classList.add('sel-a');
+    if(p.name===famPickB) chip.classList.add('sel-b');
   });
   if(famPickA && famPickB) renderTrades();
   else document.getElementById('famResults').innerHTML = '<div class="fam-hint">Tocá dos nombres para ver los intercambios posibles</div>';
 }
 function renderTrades() {
-  const stA = getProfileState(famPickA);
-  const stB = getProfileState(famPickB);
-  const aCanGive = [], bCanGive = [];
-  for(const [n, v] of Object.entries(stA)) {
-    if((v.r || 0) > 0 && (!stB[n] || !stB[n].p)) aCanGive.push({n, r: v.r});
-  }
-  for(const [n, v] of Object.entries(stB)) {
-    if((v.r || 0) > 0 && (!stA[n] || !stA[n].p)) bCanGive.push({n, r: v.r});
-  }
-  function tagsHtml(list) {
+  const stA=getProfileState(famPickA), stB=getProfileState(famPickB);
+  const aGive=[], bGive=[];
+  for(const [n,v] of Object.entries(stA)) if((v.r||0)>0 && (!stB[n]||!stB[n].p)) aGive.push({n,r:v.r});
+  for(const [n,v] of Object.entries(stB)) if((v.r||0)>0 && (!stA[n]||!stA[n].p)) bGive.push({n,r:v.r});
+  function tags(list) {
     if(!list.length) return '<span class="fam-no-trade">Ninguna por ahora</span>';
-    return `<div class="fam-tags">${list.map(({n, r}) => {
-      const info = getStickerInfo(n);
-      const label = info ? `${info.teamId} #${info.d} ${info.l}` : `#${n}`;
-      return `<span class="fam-tag">${label}${r > 1 ? ' ×'+r : ''}</span>`;
+    return `<div class="fam-tags">${list.map(({n,r})=>{
+      const i=getStickerInfo(n);
+      return `<span class="fam-tag">${i?`${i.teamId} #${i.d} ${i.l}`:`#${n}`}${r>1?' ×'+r:''}</span>`;
     }).join('')}</div>`;
   }
   document.getElementById('famResults').innerHTML = `
-    <div class="fam-res-block">
-      <div class="fam-res-head" style="color:#93c5fd">
-        ${famPickA} → ${famPickB} <span>${aCanGive.length} láminas</span>
-      </div>
-      ${tagsHtml(aCanGive)}
-    </div>
-    <div class="fam-res-block" style="margin-top:10px">
-      <div class="fam-res-head" style="color:#6ee7b7">
-        ${famPickB} → ${famPickA} <span>${bCanGive.length} láminas</span>
-      </div>
-      ${tagsHtml(bCanGive)}
-    </div>
-  `;
+    <div class="fam-res-block"><div class="fam-res-head" style="color:#93c5fd">${famPickA} → ${famPickB} <span>${aGive.length} láminas</span></div>${tags(aGive)}</div>
+    <div class="fam-res-block" style="margin-top:10px"><div class="fam-res-head" style="color:#6ee7b7">${famPickB} → ${famPickA} <span>${bGive.length} láminas</span></div>${tags(bGive)}</div>`;
 }
 
-// PERFILES
-const PROF_INDEX = 'panini2026_perfiles';
-const PROF_SESSION = 'panini2026_activo';
-const AVATARS = ['⚽','🏆','⭐','🔥','💫','🦁','🐯','🦊','🌟','🎯','🎪','🚀'];
-let currentProfile = null;
+// ── PIN ───────────────────────────────────────────────────────────────
+function esc(s) { return s.replace(/'/g,"\\'"); }
 
-function getProfiles() {
-  try { return JSON.parse(localStorage.getItem(PROF_INDEX)) || []; } catch(e) { return []; }
-}
-function saveProfiles(p) { localStorage.setItem(PROF_INDEX, JSON.stringify(p)); }
-function profStateKey(name) { return 'panini2026v4_' + name; }
-
-function getProfilePct(name) {
-  try {
-    const s = JSON.parse(localStorage.getItem(profStateKey(name))) || {};
-    return Math.round(Object.values(s).filter(v=>v.p).length / TOTAL * 100);
-  } catch(e) { return 0; }
-}
-
-// ── PIN ──────────────────────────────────────────────────────────────
 function setupPinBoxes(containerId, onComplete) {
-  const boxes = [...document.querySelectorAll('#' + containerId + ' .pin-box')];
-  boxes.forEach((box, i) => {
-    box.addEventListener('input', () => {
-      box.value = box.value.replace(/\D/g, '').slice(-1);
-      if(box.value && i < boxes.length - 1) boxes[i + 1].focus();
-      if(i === boxes.length - 1 && box.value && onComplete) onComplete();
+  const boxes = [...document.querySelectorAll('#'+containerId+' .pin-box')];
+  boxes.forEach((box,i) => {
+    box.addEventListener('input', ()=>{
+      box.value = box.value.replace(/\D/g,'').slice(-1);
+      if(box.value && i<boxes.length-1) boxes[i+1].focus();
+      if(i===boxes.length-1 && box.value && onComplete) onComplete();
     });
-    box.addEventListener('keydown', e => {
-      if(e.key === 'Backspace' && !box.value && i > 0) boxes[i - 1].focus();
-    });
+    box.addEventListener('keydown', e=>{ if(e.key==='Backspace'&&!box.value&&i>0) boxes[i-1].focus(); });
   });
 }
+function getPinFromBoxes(id) { return [...document.querySelectorAll('#'+id+' .pin-box')].map(b=>b.value).join(''); }
+function clearPinBoxes(id)   { document.querySelectorAll('#'+id+' .pin-box').forEach(b=>b.value=''); }
 
-function getPinFromBoxes(containerId) {
-  return [...document.querySelectorAll('#' + containerId + ' .pin-box')]
-    .map(b => b.value).join('');
-}
-
-function clearPinBoxes(containerId) {
-  document.querySelectorAll('#' + containerId + ' .pin-box').forEach(b => b.value = '');
-}
-
-const ADMIN_KEY = 'panini2026_adminpin';
-let pinTarget = null; // {name, action: 'enter'|'delete'|'admin'|'admin-change'|'admin-change-profile', index?, profileName?}
-let adminRevealState = {}; // {name: bool} — qué PINs están visibles en el admin
+let pinTarget = null;
+let adminRevealState = {};
 
 function showPinEntry(name, action, index) {
-  const profiles = getProfiles();
-  const p = profiles.find(x => x.name === name);
+  const p = _cachedProfiles.find(x=>x.name===name);
   if(!p || !p.pin) {
-    if(action === 'enter') { _enterProfile(name); return; }
-    if(action === 'delete') { _doDeleteProfile(index); return; }
+    if(action==='enter') { _enterProfile(name); return; }
+    if(action==='delete') { _doDeleteProfile(index); return; }
   }
   pinTarget = {name, action, index};
-  document.getElementById('pinModalAv').textContent = p.avatar;
+  document.getElementById('pinModalAv').textContent  = p ? p.avatar : '⚽';
   document.getElementById('pinModalName').textContent = name;
-  document.getElementById('pinModalSub').textContent =
-    action === 'delete' ? '⚠ PIN para eliminar perfil' : 'Ingresá tu PIN';
+  document.getElementById('pinModalSub').textContent  = action==='delete' ? '⚠ PIN para eliminar perfil' : 'Ingresá tu PIN';
   document.getElementById('pinError').textContent = '';
   clearPinBoxes('pinEntryBoxes');
   document.getElementById('pinOverlay').style.display = 'flex';
   document.querySelector('#pinEntryBoxes .pin-box').focus();
 }
-
 function _showAdminPinEntry(action, extra) {
-  pinTarget = {name: '__admin__', action, ...extra};
-  document.getElementById('pinModalAv').textContent = '🔧';
+  pinTarget = {name:'__admin__', action, ...extra};
+  document.getElementById('pinModalAv').textContent   = '🔧';
   document.getElementById('pinModalName').textContent = 'Admin';
-  document.getElementById('pinModalSub').textContent =
-    action === 'admin' ? 'PIN de administrador' : 'PIN actual de administrador';
+  document.getElementById('pinModalSub').textContent  = action==='admin' ? 'PIN de administrador' : 'PIN actual de administrador';
   document.getElementById('pinError').textContent = '';
   clearPinBoxes('pinEntryBoxes');
   document.getElementById('pinOverlay').style.display = 'flex';
   document.querySelector('#pinEntryBoxes .pin-box').focus();
 }
-
-function closePinEntry() {
-  document.getElementById('pinOverlay').style.display = 'none';
-  pinTarget = null;
-}
-
-function checkPinEntry() {
-  const pin = getPinFromBoxes('pinEntryBoxes');
-  if(pin.length < 4) return;
-  const {action} = pinTarget;
-
-  // Casos admin
-  if(action === 'admin') {
-    const stored = localStorage.getItem(ADMIN_KEY);
-    if(pin !== stored) { _pinWrong(); return; }
-    closePinEntry();
-    openAdminPanel();
-    return;
-  }
-  if(action === 'admin-change') {
-    const stored = localStorage.getItem(ADMIN_KEY);
-    if(pin !== stored) { _pinWrong(); return; }
-    closePinEntry();
-    const np = prompt('Nuevo PIN de administrador (4 dígitos):');
-    if(np && /^\d{4}$/.test(np)) { localStorage.setItem(ADMIN_KEY, np); showToast('✅ PIN admin actualizado'); }
-    else if(np) showToast('⚠ PIN debe ser 4 dígitos');
-    return;
-  }
-
-  // Caso perfil
-  const profiles = getProfiles();
-  const p = profiles.find(x => x.name === pinTarget.name);
-  if(!p || pin !== p.pin) { _pinWrong(); return; }
-  const {name, index} = pinTarget;
-  closePinEntry();
-  if(action === 'enter') _enterProfile(name);
-  else if(action === 'delete') _doDeleteProfile(index);
-}
-
+function closePinEntry() { document.getElementById('pinOverlay').style.display='none'; pinTarget=null; }
 function _pinWrong() {
   document.getElementById('pinError').textContent = '❌ PIN incorrecto, intentá de nuevo';
   clearPinBoxes('pinEntryBoxes');
   document.querySelector('#pinEntryBoxes .pin-box').focus();
 }
 
+function checkPinEntry() {
+  const pin = getPinFromBoxes('pinEntryBoxes');
+  if(pin.length < 4) return;
+  const {action} = pinTarget;
+  if(action==='admin') {
+    DB.getAdminPin(stored=>{ if(pin!==stored){_pinWrong();return;} closePinEntry(); openAdminPanel(); });
+    return;
+  }
+  if(action==='admin-change') {
+    DB.getAdminPin(stored=>{ if(pin!==stored){_pinWrong();return;}
+      closePinEntry();
+      const np=prompt('Nuevo PIN de administrador (4 dígitos):');
+      if(np&&/^\d{4}$/.test(np)) DB.setAdminPin(np,()=>showToast('✅ PIN admin actualizado'));
+      else if(np) showToast('⚠ PIN debe ser 4 dígitos');
+    });
+    return;
+  }
+  const p = _cachedProfiles.find(x=>x.name===pinTarget.name);
+  if(!p||pin!==p.pin){_pinWrong();return;}
+  const {name,index} = pinTarget;
+  closePinEntry();
+  if(action==='enter') _enterProfile(name);
+  else if(action==='delete') _doDeleteProfile(index);
+}
+
 // ── ADMIN ─────────────────────────────────────────────────────────────
 function requestAdminAccess() {
-  const stored = localStorage.getItem(ADMIN_KEY);
-  if(!stored) {
-    const np = prompt('Creá tu PIN de administrador (4 dígitos):');
-    if(!np) return;
-    if(!/^\d{4}$/.test(np)) { showToast('⚠ Debe ser exactamente 4 dígitos'); return; }
-    localStorage.setItem(ADMIN_KEY, np);
-    showToast('✅ PIN de admin creado');
-    openAdminPanel();
-  } else {
-    _showAdminPinEntry('admin', {});
-  }
+  DB.getAdminPin(stored=>{
+    if(!stored) {
+      const np=prompt('Creá tu PIN de administrador (4 dígitos):');
+      if(!np) return;
+      if(!/^\d{4}$/.test(np)){showToast('⚠ Debe ser 4 dígitos');return;}
+      DB.setAdminPin(np,()=>{showToast('✅ PIN admin creado'); openAdminPanel();});
+    } else {
+      _showAdminPinEntry('admin',{});
+    }
+  });
 }
-
 function openAdminPanel() {
-  adminRevealState = {};
-  document.getElementById('profOverlay').style.display = 'none';
-  document.getElementById('adminOverlay').style.display = 'flex';
-  renderAdminList();
+  adminRevealState={};
+  document.getElementById('profOverlay').style.display='none';
+  document.getElementById('adminOverlay').style.display='flex';
+  showLoading('Cargando datos...');
+  DB.getProfilesWithStats(({profiles,pctMap})=>{
+    hideLoading();
+    _cachedProfiles=profiles; _cachedPctMap=pctMap;
+    renderAdminList();
+  });
 }
-
 function closeAdmin() {
-  document.getElementById('adminOverlay').style.display = 'none';
-  document.getElementById('profOverlay').style.display = 'flex';
+  document.getElementById('adminOverlay').style.display='none';
+  document.getElementById('profOverlay').style.display='flex';
 }
-
 function renderAdminList() {
-  const profiles = getProfiles();
-  document.getElementById('adminList').innerHTML = profiles.length === 0
+  document.getElementById('adminList').innerHTML = !_cachedProfiles.length
     ? '<div class="fam-hint">No hay perfiles creados aún</div>'
-    : profiles.map((p, i) => {
-        const revealed = adminRevealState[p.name];
-        const pinDisplay = p.pin
-          ? (revealed ? `<span style="color:var(--dorado);letter-spacing:.1em">${p.pin}</span>` : '••••')
-          : '<span style="color:rgba(255,255,255,0.3);font-size:12px">sin PIN</span>';
+    : _cachedProfiles.map((p,i)=>{
+        const rev=adminRevealState[p.name];
+        const pinD=p.pin?(rev?`<span style="color:var(--dorado);letter-spacing:.1em">${p.pin}</span>`:'••••'):'<span style="color:rgba(255,255,255,0.3);font-size:12px">sin PIN</span>';
+        const pct=_cachedPctMap[p.name]!=null?Math.round(_cachedPctMap[p.name]/TOTAL*100):0;
         return `<div class="admin-row">
           <span class="admin-row-av">${p.avatar}</span>
-          <span class="admin-row-name">${p.name}</span>
+          <div style="flex:1"><span class="admin-row-name">${p.name}</span><div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px">${pct}% completado</div></div>
           <div class="admin-pin-wrap">
-            <span class="admin-pin-val">${pinDisplay}</span>
-            <button class="admin-icon-btn" onclick="adminToggleReveal('${p.name.replace(/'/g,"\\'")}',${i})" title="${revealed?'Ocultar':'Ver PIN'}">
-              ${revealed ? '🙈' : '👁'}
-            </button>
-            <button class="admin-icon-btn" onclick="adminChangePin('${p.name.replace(/'/g,"\\'")}',${i})" title="Cambiar PIN">✏️</button>
+            <span class="admin-pin-val">${pinD}</span>
+            <button class="admin-icon-btn" onclick="adminToggleReveal('${esc(p.name)}',${i})">${rev?'🙈':'👁'}</button>
+            <button class="admin-icon-btn" onclick="adminChangePin('${esc(p.name)}',${i})">✏️</button>
           </div>
         </div>`;
       }).join('');
 }
-
-function adminToggleReveal(name, i) {
-  adminRevealState[name] = !adminRevealState[name];
-  renderAdminList();
-}
-
-function adminChangePin(name, i) {
-  const np = prompt(`Nuevo PIN para ${name} (4 dígitos):`);
+function adminToggleReveal(name) { adminRevealState[name]=!adminRevealState[name]; renderAdminList(); }
+function adminChangePin(name,i) {
+  const np=prompt(`Nuevo PIN para ${name} (4 dígitos):`);
   if(!np) return;
-  if(!/^\d{4}$/.test(np)) { showToast('⚠ PIN debe ser 4 dígitos numéricos'); return; }
-  const profiles = getProfiles();
-  profiles[i].pin = np;
-  saveProfiles(profiles);
-  adminRevealState[name] = true;
-  renderAdminList();
-  showToast(`✅ PIN de ${name} actualizado`);
+  if(!/^\d{4}$/.test(np)){showToast('⚠ PIN debe ser 4 dígitos');return;}
+  showLoading('Guardando...');
+  DB.updatePin(name,np,()=>{
+    hideLoading();
+    _cachedProfiles[i].pin=np;
+    adminRevealState[name]=true;
+    renderAdminList();
+    showToast('✅ PIN de '+name+' actualizado');
+  });
 }
-
 function changeAdminPinAction() {
-  const stored = localStorage.getItem(ADMIN_KEY);
-  if(!stored) { requestAdminAccess(); return; }
-  _showAdminPinEntry('admin-change', {});
+  DB.getAdminPin(stored=>{ if(!stored){requestAdminAccess();return;} _showAdminPinEntry('admin-change',{}); });
 }
 
-// ── PERFIL ───────────────────────────────────────────────────────────
+// ── PERFILES ─────────────────────────────────────────────────────────
 function renderProfiles() {
-  const profiles = getProfiles();
-  const grid = document.getElementById('profGrid');
-  grid.innerHTML = profiles.map((p, i) => `
-    <div class="prof-card" onclick="showPinEntry('${p.name.replace(/'/g,"\\'")}','enter',${i})">
-      <button class="prof-del" onclick="event.stopPropagation();showPinEntry('${p.name.replace(/'/g,"\\'")}','delete',${i})" title="Eliminar">✕</button>
-      <span class="prof-avatar">${p.avatar}</span>
-      <div class="prof-name">${p.name}</div>
-      <div class="prof-pct">${getProfilePct(p.name)}% completado</div>
-    </div>
-  `).join('');
+  const grid=document.getElementById('profGrid');
+  grid.innerHTML='<div class="prof-hint">Cargando perfiles...</div>';
+  DB.getProfilesWithStats(({profiles,pctMap})=>{
+    _cachedProfiles=profiles; _cachedPctMap=pctMap;
+    if(!profiles.length){grid.innerHTML=''; showProfForm(); return;}
+    grid.innerHTML=profiles.map((p,i)=>{
+      const pct=pctMap[p.name]!=null?Math.round(pctMap[p.name]/TOTAL*100):0;
+      return `<div class="prof-card" onclick="showPinEntry('${esc(p.name)}','enter',${i})">
+        <button class="prof-del" onclick="event.stopPropagation();showPinEntry('${esc(p.name)}','delete',${i})" title="Eliminar">✕</button>
+        <span class="prof-avatar">${p.avatar}</span>
+        <div class="prof-name">${p.name}</div>
+        <div class="prof-pct">${pct}% completado</div>
+      </div>`;
+    }).join('');
+  });
 }
-
 function showProfForm() {
-  const form = document.getElementById('profForm');
-  form.style.display = 'flex';
-  document.getElementById('profAddBtn').style.display = 'none';
+  document.getElementById('profForm').style.display='flex';
+  document.getElementById('profAddBtn').style.display='none';
   document.getElementById('profInput').focus();
   clearPinBoxes('pinCreateBoxes');
 }
-
 function createProfile() {
-  const input = document.getElementById('profInput');
-  const name = input.value.trim();
-  if(!name) { showToast('⚠ Ingresá un nombre'); return; }
-  const pin = getPinFromBoxes('pinCreateBoxes');
-  if(pin.length !== 4) { showToast('⚠ Completá los 4 dígitos del PIN'); return; }
-  const profiles = getProfiles();
-  if(profiles.some(p => p.name.toLowerCase() === name.toLowerCase())) {
-    showToast('⚠ Ese nombre ya existe');
-    return;
-  }
-  const avatar = AVATARS[profiles.length % AVATARS.length];
-  profiles.push({name, avatar, pin});
-  saveProfiles(profiles);
-  input.value = '';
-  clearPinBoxes('pinCreateBoxes');
-  document.getElementById('profForm').style.display = 'none';
-  document.getElementById('profAddBtn').style.display = 'block';
-  renderProfiles();
-  _enterProfile(name);
+  const name=document.getElementById('profInput').value.trim();
+  if(!name){showToast('⚠ Ingresá un nombre');return;}
+  const pin=getPinFromBoxes('pinCreateBoxes');
+  if(pin.length!==4){showToast('⚠ Completá los 4 dígitos del PIN');return;}
+  const avatar=AVATARS[_cachedProfiles.length%AVATARS.length];
+  showLoading('Creando perfil...');
+  DB.createProfile(name, avatar, pin, res=>{
+    hideLoading();
+    if(!res.ok){showToast('⚠ '+(res.msg||'Error al crear'));return;}
+    document.getElementById('profInput').value='';
+    clearPinBoxes('pinCreateBoxes');
+    document.getElementById('profForm').style.display='none';
+    document.getElementById('profAddBtn').style.display='block';
+    _enterProfile(name);
+  });
 }
-
 function _doDeleteProfile(index) {
-  const profiles = getProfiles();
-  if(index < 0 || index >= profiles.length) return;
-  const name = profiles[index].name;
-  if(!confirm('¿Eliminar perfil de ' + name + '? No se puede deshacer.')) return;
-  profiles.splice(index, 1);
-  saveProfiles(profiles);
-  localStorage.removeItem(profStateKey(name));
-  renderProfiles();
-  showToast('🗑 Perfil eliminado');
+  const p=_cachedProfiles[index];
+  if(!p) return;
+  if(!confirm('¿Eliminar perfil de '+p.name+'? No se puede deshacer.')) return;
+  showLoading('Eliminando...');
+  DB.deleteProfile(p.name, ()=>{ hideLoading(); renderProfiles(); showToast('🗑 Perfil eliminado'); });
 }
-
 function _enterProfile(name) {
-  const profiles = getProfiles();
-  const p = profiles.find(x => x.name === name);
-  currentProfile = name;
-  sessionStorage.setItem(PROF_SESSION, name);
-  document.getElementById('profOverlay').style.display = 'none';
-  document.getElementById('profBadge').style.display = 'flex';
-  document.getElementById('profBadgeAvatar').textContent = p ? p.avatar : '⚽';
-  document.getElementById('profBadgeName').textContent = name;
-  loadState(); renderAll(); updateStats();
+  const p=_cachedProfiles.find(x=>x.name===name)||{avatar:'⚽',name};
+  currentProfile=name;
+  sessionStorage.setItem(PROF_SESSION,name);
+  document.getElementById('profOverlay').style.display='none';
+  document.getElementById('profBadge').style.display='flex';
+  document.getElementById('profBadgeAvatar').textContent=p.avatar;
+  document.getElementById('profBadgeName').textContent=name;
+  showLoading('Cargando tu álbum...');
+  DB.getState(name, st=>{
+    state=st; _stateCache[name]=st;
+    hideLoading(); renderAll(); updateStats();
+  });
 }
-
-function selectProfile(name) { _enterProfile(name); }
-
+function selectProfile(name){ _enterProfile(name); }
 function switchProfile() {
-  currentProfile = null;
-  state = {};
+  currentProfile=null; state={};
   sessionStorage.removeItem(PROF_SESSION);
-  document.getElementById('profBadge').style.display = 'none';
-  document.getElementById('profOverlay').style.display = 'flex';
+  document.getElementById('profBadge').style.display='none';
+  document.getElementById('profOverlay').style.display='flex';
   renderProfiles();
-  const profiles = getProfiles();
-  if(profiles.length === 0) showProfForm();
 }
 
-function loadState() {
-  try {
-    const key = currentProfile ? profStateKey(currentProfile) : 'panini2026v4';
-    const s = localStorage.getItem(key);
-    if(s) state = JSON.parse(s); else state = {};
-  } catch(e) { state = {}; }
-}
-function saveState() {
-  try {
-    const key = currentProfile ? profStateKey(currentProfile) : 'panini2026v4';
-    localStorage.setItem(key, JSON.stringify(state));
-  } catch(e) {}
-}
+function loadState() { /* no-op: _enterProfile usa DB.getState */ }
+function saveState() { if(currentProfile) DB.saveState(currentProfile, state); }
 function getS(num) { return state[num] || {p:false,r:0}; }
 function countPeg() { return Object.values(state).filter(v=>v.p).length; }
 function countRep() { return Object.values(state).reduce((a,v)=>a+(v.r||0),0); }
@@ -1630,17 +1668,32 @@ function showToast(msg) {
   toastTimer = setTimeout(()=>t.classList.remove('show'), 2000);
 }
 
-// Inicializar con perfil
+// Inicializar
 setupPinBoxes('pinCreateBoxes', null);
 setupPinBoxes('pinEntryBoxes', checkPinEntry);
-document.getElementById('profInput').addEventListener('keydown', e => { if(e.key==='Enter') { const p = getPinFromBoxes('pinCreateBoxes'); if(p.length===4) createProfile(); else document.querySelector('#pinCreateBoxes .pin-box').focus(); } });
-renderProfiles();
+document.getElementById('profInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ if(getPinFromBoxes('pinCreateBoxes').length===4) createProfile(); else document.querySelector('#pinCreateBoxes .pin-box').focus(); }
+});
 const _savedProf = sessionStorage.getItem(PROF_SESSION);
-if(_savedProf && getProfiles().some(p=>p.name===_savedProf)) {
-  _enterProfile(_savedProf);
+if(_savedProf) {
+  showLoading('Cargando tu álbum...');
+  DB.getProfilesWithStats(({profiles,pctMap})=>{
+    _cachedProfiles=profiles; _cachedPctMap=pctMap;
+    if(profiles.some(p=>p.name===_savedProf)) {
+      DB.getState(_savedProf, st=>{
+        state=st; _stateCache[_savedProf]=st;
+        const p=profiles.find(x=>x.name===_savedProf)||{avatar:'⚽'};
+        currentProfile=_savedProf;
+        document.getElementById('profOverlay').style.display='none';
+        document.getElementById('profBadge').style.display='flex';
+        document.getElementById('profBadgeAvatar').textContent=p.avatar;
+        document.getElementById('profBadgeName').textContent=_savedProf;
+        hideLoading(); renderAll(); updateStats();
+      });
+    } else { hideLoading(); renderProfiles(); }
+  });
 } else {
-  const _profiles = getProfiles();
-  if(_profiles.length === 0) showProfForm();
+  renderProfiles();
 }
 </script>
 </body>
