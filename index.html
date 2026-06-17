@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Álbum Panini FIFA 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -23,6 +26,12 @@
   --pegada-borde: #00a651;
   --repetida-bg: #fff3cd;
   --repetida-borde: #f5c518;
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -511,6 +520,17 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 .prof-card:hover .prof-del { opacity: 1; }
+.prof-fixture-btn {
+  width: 100%; max-width: 360px;
+  background: linear-gradient(135deg, rgba(0,166,81,0.2), rgba(0,100,50,0.3));
+  border: 1.5px solid rgba(0,166,81,0.5);
+  border-radius: 14px; padding: 13px;
+  color: #4ade80; cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700;
+  transition: background .2s; letter-spacing: .3px;
+}
+.prof-fixture-btn:hover { background: linear-gradient(135deg, rgba(0,166,81,0.3), rgba(0,100,50,0.4)); }
 .prof-add-btn {
   width: 100%; max-width: 360px;
   background: rgba(245,197,24,0.08);
@@ -772,6 +792,129 @@ body {
   font-size: 11px; color: rgba(255,255,255,0.4);
   text-transform: uppercase; letter-spacing: .05em;
 }
+
+/* ── FIXTURE SCREEN ──────────────────────────────────────── */
+.fix-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: var(--azul-noche);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.fix-top {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 14px 10px;
+  background: linear-gradient(135deg, var(--azul-noche), var(--azul-claro));
+  border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+}
+.fix-back {
+  background: rgba(255,255,255,0.1); border: none;
+  color: #fff; padding: 7px 12px; border-radius: 8px;
+  font-size: 13px; cursor: pointer; font-family:'Inter',sans-serif;
+}
+.fix-heading {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size: 18px; font-weight: 800; color: #fff;
+  text-transform: uppercase; letter-spacing: .5px; flex: 1;
+}
+.fix-edit-btn {
+  background: rgba(245,197,24,0.12); border: 1px solid rgba(245,197,24,0.35);
+  color: var(--dorado); padding: 6px 10px; border-radius: 8px;
+  font-size: 12px; font-weight: 600; cursor: pointer; font-family:'Inter',sans-serif;
+}
+.fix-edit-btn.active { background: var(--dorado); color: var(--azul-noche); border-color: var(--dorado); }
+.fix-tabs {
+  display: flex; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+}
+.fix-tab {
+  flex: 1; padding: 10px; background: none; border: none;
+  border-bottom: 2px solid transparent; color: rgba(255,255,255,0.4);
+  font-family:'Inter',sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s;
+}
+.fix-tab.active { color: var(--dorado); border-bottom-color: var(--dorado); }
+.fix-body { flex: 1; overflow-y: auto; padding: 12px 12px 2rem; }
+.grp-selector { display: grid; grid-template-columns: repeat(6,1fr); gap: 5px; margin-bottom: 14px; }
+.grp-sel-btn {
+  padding: 8px 4px; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+  color: rgba(255,255,255,0.5); font-family:'Barlow Condensed',sans-serif;
+  font-size: 17px; font-weight: 700; cursor: pointer; text-align: center; transition: all .15s;
+}
+.grp-sel-btn.active { background: var(--verde); border-color: var(--verde); color: #fff; }
+.sect-title {
+  font-family:'Barlow Condensed',sans-serif; font-size: 14px; font-weight: 700;
+  color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .3px; margin-bottom: 6px;
+}
+.standings-table {
+  width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 14px;
+}
+.standings-table th {
+  padding: 6px 3px; text-align: center;
+  background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.4);
+  font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .04em;
+}
+.standings-table th:first-child { text-align: left; padding-left: 10px; }
+.standings-table td {
+  padding: 7px 3px; text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.8);
+}
+.standings-table td.tcell { text-align: left; padding-left: 10px; font-weight: 600; color: #fff; }
+.standings-table tr.q1 td { background: rgba(0,166,81,0.14); }
+.standings-table tr.q2 td { background: rgba(0,100,50,0.08); }
+.standings-table tr.q3 td { background: rgba(245,197,24,0.07); }
+.standings-table td.pts { font-family:'Barlow Condensed',sans-serif; font-size: 16px; font-weight: 800; color: var(--dorado); }
+.match-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.match-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 9px 10px; display: flex; align-items: center; gap: 6px;
+}
+.match-card.editable { cursor: pointer; border-color: rgba(245,197,24,0.25); }
+.match-card.editable:active { opacity: 0.7; }
+.match-card.played { border-color: rgba(0,166,81,0.3); }
+.mteam { flex: 1; font-family:'Barlow Condensed',sans-serif; font-size: 14px; font-weight: 700; color: #fff; }
+.mteam.home { text-align: right; }
+.mteam.away { text-align: left; }
+.mscore { font-family:'Barlow Condensed',sans-serif; font-size: 20px; font-weight: 800; color: var(--dorado); min-width: 50px; text-align: center; flex-shrink: 0; }
+.mscore.pending { color: rgba(255,255,255,0.18); font-size: 14px; }
+.mflag { font-size: 15px; flex-shrink: 0; }
+.ko-round { margin-bottom: 18px; }
+.ko-round-title {
+  font-family:'Barlow Condensed',sans-serif; font-size: 18px; font-weight: 800;
+  color: var(--dorado); text-transform: uppercase;
+  margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid rgba(245,197,24,0.25);
+}
+.fix-modal-overlay {
+  position: fixed; inset: 0; z-index: 3000;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.fix-modal {
+  background: #16213a; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px; padding: 1.5rem; width: 100%; max-width: 320px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.fix-modal-title { font-family:'Barlow Condensed',sans-serif; font-size: 17px; font-weight: 800; color: #fff; text-align: center; line-height: 1.2; }
+.fix-score-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.fix-score-team { font-family:'Barlow Condensed',sans-serif; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); text-align: center; flex: 1; min-width: 0; }
+.fix-score-input {
+  width: 54px; height: 54px; border-radius: 10px;
+  background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.2);
+  color: var(--dorado); font-family:'Barlow Condensed',sans-serif;
+  font-size: 28px; font-weight: 800; text-align: center; outline: none;
+  -moz-appearance: textfield; -webkit-appearance: none; appearance: none;
+}
+.fix-score-input:focus { border-color: var(--dorado); }
+.fix-score-sep { font-size: 22px; font-weight: 700; color: rgba(255,255,255,0.25); }
+.fix-modal-btns { display: flex; gap: 7px; flex-direction: column; }
+.fix-btn-save { padding: 11px; background: var(--verde); border: none; border-radius: 10px; color: #fff; font-family:'Inter',sans-serif; font-weight: 600; cursor: pointer; font-size: 14px; }
+.fix-btn-clear { padding: 9px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: rgba(255,255,255,0.4); font-family:'Inter',sans-serif; cursor: pointer; font-size: 13px; }
+.fix-btn-cancel { padding: 9px; background: none; border: none; color: rgba(255,255,255,0.3); font-family:'Inter',sans-serif; cursor: pointer; font-size: 13px; }
+.ko-edit-teams { display: flex; gap: 8px; align-items: center; }
+.ko-team-input {
+  flex: 1; padding: 8px 6px; background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.15); border-radius: 8px;
+  color: #fff; font-family:'Barlow Condensed',sans-serif;
+  font-size: 14px; font-weight: 700; text-align: center; outline: none; text-transform: uppercase;
+}
+.ko-team-input:focus { border-color: var(--dorado); }
 </style>
 </head>
 <body>
@@ -835,6 +978,7 @@ body {
     </div>
     <button class="prof-create-btn" onclick="createProfile()" style="width:100%">Crear perfil</button>
   </div>
+  <button class="prof-fixture-btn" onclick="openFixture()">📋 Resultados Copa 2026</button>
   <button class="prof-add-btn" id="profAddBtn" onclick="showProfForm()">+ Nuevo perfil</button>
   <button class="admin-access-link" onclick="requestAdminAccess()">🔧 Administrador</button>
 </div>
@@ -851,6 +995,39 @@ body {
   </div>
 </div>
 
+<!-- ── FIXTURE SCREEN ── -->
+<div class="fix-overlay" id="fixOverlay" style="display:none">
+  <div class="fix-top">
+    <button class="fix-back" onclick="closeFixture()">← Volver</button>
+    <span class="fix-heading">🏆 Copa 2026</span>
+    <button class="fix-edit-btn" id="fixEditBtn" onclick="toggleFixAdmin()">✏️ Editar</button>
+  </div>
+  <div class="fix-tabs">
+    <button class="fix-tab active" id="ftabGrupos" onclick="showFixTab('grupos')">📋 Grupos</button>
+    <button class="fix-tab" id="ftabBracket" onclick="showFixTab('bracket')">🏅 Eliminatorias</button>
+  </div>
+  <div class="fix-body" id="fixBody"></div>
+</div>
+
+<div class="fix-modal-overlay" id="fixModalOverlay" style="display:none">
+  <div class="fix-modal">
+    <div class="fix-modal-title" id="fixModalTitle">Resultado</div>
+    <div id="fixModalTeamInputs"></div>
+    <div class="fix-score-row">
+      <span class="fix-score-team" id="fixSHName"></span>
+      <input type="number" class="fix-score-input" id="fixSH" min="0" max="99" placeholder="0">
+      <span class="fix-score-sep">–</span>
+      <input type="number" class="fix-score-input" id="fixSA" min="0" max="99" placeholder="0">
+      <span class="fix-score-team" id="fixSAName"></span>
+    </div>
+    <div class="fix-modal-btns">
+      <button class="fix-btn-save" onclick="saveMatchScore()">✅ Guardar resultado</button>
+      <button class="fix-btn-clear" onclick="clearMatchScore()">🗑 Borrar resultado</button>
+      <button class="fix-btn-cancel" onclick="closeMatchModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div class="hero">
   <div class="hero-content">
     <div class="prof-badge" id="profBadge" style="display:none">
@@ -860,6 +1037,7 @@ body {
       </div>
       <div style="display:flex;gap:6px">
         <button class="fam-btn" onclick="openFamilia()">👥 Amigos</button>
+        <button class="fam-btn" onclick="openFixture()">📋 Fixture</button>
         <button class="prof-switch-btn" onclick="switchProfile()">Cambiar</button>
       </div>
     </div>
@@ -929,7 +1107,9 @@ body {
 
 <script>
 function gen(start, count, names) {
-  return Array.from({length: count}, (_, i) => ({n: String(start+i), d: String(i+1), l: names[i] || ('Jug.'+(i+1))}));
+  // Orden real del álbum: 1=Escudo, 2-12=jugadores, 13=Equipo, 14-20=jugadores
+  const ord = [names[1], ...names.slice(2, 13), names[0], ...names.slice(13)];
+  return Array.from({length: count}, (_, i) => ({n: String(start+i), d: String(i+1), l: ord[i] || ('Jug.'+(i+1))}));
 }
 function genFWC() {
   return [
@@ -969,76 +1149,76 @@ const EQUIPOS = [
     {id:"FWC",n:"FIFA World Cup 2026",f:"🏆",fc:"",stickers:genFWC()}
   ]},
   {g:"Grupo A",teams:[
-    {id:"MEX",n:"México",f:"🇲🇽",fc:"mx",stickers:gen(21,20,["Equipo","Escudo","Rangel","Acevedo","Ochoa","J.Sánchez","Montes","Álvarez E.","Gallardo","L.Chávez","Romo","Fidalgo","Pineda","O.Vargas","B.Gutiérrez","R.Jiménez","S.Giménez","A.Vega","Alvarado","Quiñones"])},
-    {id:"RSA",n:"Sudáfrica",f:"🇿🇦",fc:"za",stickers:gen(41,20,["Equipo","Escudo","R.Williams","Goss","Chaine","Modiba","Mudau","Sibisi","Mbokazi","Ndamane","Mokoena","Mbatha","Sithole","Adams J.","Zwane","Foster","Makgopa","Appollis","Rayners","Mofokeng"])},
-    {id:"KOR",n:"Corea del Sur",f:"🇰🇷",fc:"kr",stickers:gen(61,20,["Equipo","Escudo","Kim S-G","Song B-K","Lee H-B","Kim M-J","Kim T-H","Park J-S","Bae J-H","Lee K-I","Hwang I-B","Hwang H-C","Yang H-J","Lee J-S","Paik S-H","Eom J-S","Lee T-S","Son H-M","Cho G-S","Oh H-G"])},
-    {id:"CZE",n:"Chequia",f:"🇨🇿",fc:"cz",stickers:gen(81,20,["Equipo","Escudo","Kovář","Staněk","Coufal","Holeš","Hranáč","Krejčí","Jurásek","Zelený","Darida","Souček","Červ","Provod","Sadílek","Šulc","Hložek","Schick","Kuchta","Chytil"])}
+    {id:"MEX",n:"México",f:"🇲🇽",fc:"mx",stickers:gen(21,20,["Equipo","Escudo","L.Malagón","J.Vásquez","J.Sánchez","Montes","Gallardo","I.Reyes","Lainez","C.Rodríguez","E.Álvarez","O.Pineda","M.Ruiz","É.Sánchez","H.Lozano","S.Giménez","R.Jiménez","A.Vega","R.Alvarado","C.Huerta"])},
+    {id:"RSA",n:"Sudáfrica",f:"🇿🇦",fc:"za",stickers:gen(41,20,["Equipo","Escudo","R.Williams","Chaine","Modiba","S.Kabini","B.Mbokazi","Ndamane","Ngezana","Mudau","N.Sibisi","L.Mokoena","T.Mbatha","B.Aubaas","Sithole","Mbule","Foster","Rayners","M.Nkota","Appollis"])},
+    {id:"KOR",n:"Corea del Sur",f:"🇰🇷",fc:"kr",stickers:gen(61,20,["Equipo","Escudo","H.Jo","S.Kim","M.Kim","Y.Cho","Seol","H.Lee","T.Lee","M.Lee","J.Lee","I.Hwang","K.Lee","Paik","Castrop","D.Lee","G.Cho","Son","H.Hwang","Oh"])},
+    {id:"CZE",n:"Chequia",f:"🇨🇿",fc:"cz",stickers:gen(81,20,["Equipo","Escudo","Kovar","Stanek","Krejci","Coufal","Zeleny","Holes","Zima","Sadilek","Provod","Cerv","Soucek","Sulc","Vydra","Kusej","Chory","V.Cerny","Hlozek","Schick"])}
   ]},
   {g:"Grupo B",teams:[
-    {id:"CAN",n:"Canadá",f:"🇨🇦",fc:"ca",stickers:gen(101,20,["Equipo","Escudo","St.Clair","Crépeau","Johnston","Jones A.","Cornelius","Bombito","Davies","Waterman","Eustáquio","Koné","Osorio","Shaffelburg","Millar","David J.","Buchanan","Oluwaseyi","Larin","Nelson"])},
-    {id:"BIH",n:"Bosnia-Herz.",f:"🇧🇦",fc:"ba",stickers:gen(121,20,["Equipo","Escudo","Vasilj","Zlomislić","Kolašinac","Hadžikadunić","Muharemović","Dedić","Katić","Radeljić","Tahirović","Gigović","Šunjić","Burnić","Hadžiahm.","Bajraktarević","Demirović","Džeko","Baždar","Tabaković"])},
-    {id:"QAT",n:"Qatar",f:"🇶🇦",fc:"qa",stickers:gen(141,20,["Equipo","Escudo","Abunada","Barsham","Pedro Miguel","Lucas Mendes","Gaber","Boualem K.","Madibo","Hatem","Boudiaf","Al-Ganehi","Fathy A.","Alaaeldin","Edmilson","Muntari","Al-Haydos","Afif","Almoez Ali","Abdurisag"])},
-    {id:"SUI",n:"Suiza",f:"🇨🇭",fc:"ch",stickers:gen(161,20,["Equipo","Escudo","Kobel","Mvogo","Akanji","Elvedi","Rodriguez R.","Widmer","Comert","Xhaka","Freuler","Jashari","Aebischer","Sow","Zakaria","Rieder","Vargas R.","Embolo","Ndoye","Okafor"])}
+    {id:"CAN",n:"Canadá",f:"🇨🇦",fc:"ca",stickers:gen(101,20,["Equipo","Escudo","St.Clair","Davies","Johnston","Adekugbe","Laryea","Cornelius","Bombito","K.Miller","Eustaquio","Koné","Osorio","Shaffelburg","Choinière","Sigur","Buchanan","Millar","Larin","J.David"])},
+    {id:"BIH",n:"Bosnia-Herz.",f:"🇧🇦",fc:"ba",stickers:gen(121,20,["Equipo","Escudo","Vasilj","Dedic","Kolasinac","Muharemovic","Mujakic","Katic","Hadziahm.","Tahirovic","Gigovic","Sunjic","Basic","Burnic","Bajraktarevic","Memic","Demirovic","Dzeko","Bazdar","Tabakovic"])},
+    {id:"QAT",n:"Qatar",f:"🇶🇦",fc:"qa",stickers:gen(141,20,["Equipo","Escudo","Barsham","S.Albrake","L.Mendes","H.Ahmed","Khoukhi","P.Miguel","T.Salman","Al-Mannai","Boudiaf","Madibo","Fatehi","M.Waad","A.Hatem","Al-Haydos","Edmilson","Afif","Al-Ganehi","Almoez"])},
+    {id:"SUI",n:"Suiza",f:"🇨🇭",fc:"ch",stickers:gen(161,20,["Equipo","Escudo","Kobel","Mvogo","Akanji","R.Rodriguez","Elvedi","Amenda","Widmer","Xhaka","Zakaria","Freuler","Rieder","Jashari","Manzambi","Aebischer","Embolo","R.Vargas","Ndoye","Amdouni"])}
   ]},
   {g:"Grupo C",teams:[
-    {id:"BRA",n:"Brasil",f:"🇧🇷",fc:"br",stickers:gen(181,20,["Equipo","Escudo","Alisson","Ederson","Marquinhos","Gabriel","Bremer","Danilo","Alex Sandro","Casemiro","B.Guimarães","Paquetá","Raphinha","Vinícius Jr","Neymar","Endrick","Rodrygo","Cunha","Martinelli","Igor Thiago"])},
-    {id:"MAR",n:"Marruecos",f:"🇲🇦",fc:"ma",stickers:gen(201,20,["Equipo","Escudo","Bounou","Mohamedi","Mazraoui","Aguerd","Hakimi","Riad","Diop I.","Halhal","El Ouahdi","Amrabat","Ounahi","El Khannouss","Saibari","Bouaddi","Ezzalzouli","Diaz B.","Rahimi","El Kaabi"])},
-    {id:"HAI",n:"Haití",f:"🇭🇹",fc:"ht",stickers:gen(221,20,["Equipo","Escudo","Placide","Duverger","Ade","Arcus","Duverne","Lacroix","Paugain","Delcroix","Pierre L.","Jean Jacques","Sainte","Bellegarde","Pierre W.","Simon D.","Nazon","Pierrot","Etienne Jr.","Isidor"])},
-    {id:"SCO",n:"Escocia",f:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",fc:"gb-sct",stickers:gen(241,20,["Equipo","Escudo","Gordon","Gunn","Hanley","Hendry","McKenna","Robertson","Patterson","Tierney","Christie","McGinn","McLean","McTominay","Ferguson L.","Gannon-Doak","Adams C.","Dykes","Shankland","Stewart R."])}
+    {id:"BRA",n:"Brasil",f:"🇧🇷",fc:"br",stickers:gen(181,20,["Equipo","Escudo","Alisson","Bento","Marquinhos","Militão","G.Magalhães","Danilo","Wesley","Paquetá","Casemiro","B.Guimarães","L.Henrique","Vinícius Jr","Rodrygo","J.Pedro","M.Cunha","Martinelli","Raphinha","Estévão"])},
+    {id:"MAR",n:"Marruecos",f:"🇲🇦",fc:"ma",stickers:gen(201,20,["Equipo","Escudo","Bounou","El Kajoui","Hakimi","Mazraoui","Aguerd","Saiss","El Yamiq","Masina","Amrabat","Ounahi","Ben Seghir","El Khannouss","Saibari","En-Nesyri","Ezzalzouli","Rahimi","B.Díaz","El Kaabi"])},
+    {id:"HAI",n:"Haití",f:"🇭🇹",fc:"ht",stickers:gen(221,20,["Equipo","Escudo","Placide","Arcus","Expérience","Duverne","Adé","Lacroix","Metusala","Delcroix","L.Pierre","Jean Jacques","Bellegarde","Attys","D.Etienne","Casimir","Providence","Nazon","Deedson","Pierrot"])},
+    {id:"SCO",n:"Escocia",f:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",fc:"gb-sct",stickers:gen(241,20,["Equipo","Escudo","Gunn","J.Hendry","Tierney","Hickey","Robertson","McKenna","J.Souttar","Ralston","Hanley","McTominay","Gilmour","L.Ferguson","Christie","McLean","McGinn","Dykes","C.Adams","Gannon-Doak"])}
   ]},
   {g:"Grupo D",teams:[
-    {id:"USA",n:"Estados Unidos",f:"🇺🇸",fc:"us",stickers:gen(261,20,["Equipo","Escudo","Turner","Brady","Dest","Ream","McKenzie","Richards","Robinson A.","Scally","Adams T.","McKennie","Reyna","Tillman","Roldan","Pulisic","Weah","Balogun","Pepi","Wright H."])},
-    {id:"PAR",n:"Paraguay",f:"🇵🇾",fc:"py",stickers:gen(281,20,["Equipo","Escudo","Fernández G.","Olveira","Velázquez","Alderete","Cáceres J.","Balbuena","Alonso J.","Gómez G.","Sosa R.","Diego Gómez","Almirón","Cubas","Bobadilla","Ojeda","Galarza","Sanabria","Enciso","Kaku"])},
-    {id:"AUS",n:"Australia",f:"🇦🇺",fc:"au",stickers:gen(301,20,["Equipo","Escudo","Ryan","Izzo","Behich","Souttar H.","Burgess","Circati","Degenek","Geria","Irvine","Devlin","Hrustic","O'Neill","Metcalfe","Leckie","Mabil","Irankunda","Volpato","Yengi"])},
-    {id:"TUR",n:"Türkiye",f:"🇹🇷",fc:"tr",stickers:gen(321,20,["Equipo","Escudo","Günok","Bayındır","Çelik","Demiral","Söyüncü","Bardakçı","Kabak","Kadıoğlu","Özcan S.","Kökçü","Calhanoglu","Güler","Yildiz K.","Aktürkoğlu","Kahveci","Yilmaz B.","Ayhan K.","Can Uzun"])}
+    {id:"USA",n:"Estados Unidos",f:"🇺🇸",fc:"us",stickers:gen(261,20,["Equipo","Escudo","Freese","Richards","Ream","McKenzie","Freeman","A.Robinson","T.Adams","Tessmann","McKennie","Roldan","T.Weah","D.Luna","Tillman","Pulisic","Aaronson","Pepi","H.Wright","Balogun"])},
+    {id:"PAR",n:"Paraguay",f:"🇵🇾",fc:"py",stickers:gen(281,20,["Equipo","Escudo","R.Fernández","O.Gill","G.Gómez","Balbuena","J.Cáceres","Alderete","J.Alonso","Villasanti","D.Gómez","Bobadilla","Cubas","Galarza","Enciso","Kaku","Almirón","R.Sosa","A.Romero","Sanabria"])},
+    {id:"AUS",n:"Australia",f:"🇦🇺",fc:"au",stickers:gen(301,20,["Equipo","Escudo","M.Ryan","Gauci","H.Souttar","Circati","Bos","Behich","Burgess","L.Miller","Degenek","Irvine","McGree","O'Neill","Metcalfe","Yazbek","Goodwin","Yengi","Irankunda","M.Touré"])},
+    {id:"TUR",n:"Türkiye",f:"🇹🇷",fc:"tr",stickers:gen(321,20,["Equipo","Escudo","Cakir","Muldur","Z.Celik","Bardakci","Soyuncu","Demiral","Kadioglu","K.Ayhan","Yuksek","Calhanoglu","Kokcu","A.Güler","I.Kahveci","Y.Akgun","C.Uzun","B.Yilmaz","Akturkoglu","K.Yildiz"])}
   ]},
   {g:"Grupo E",teams:[
-    {id:"GER",n:"Alemania",f:"🇩🇪",fc:"de",stickers:gen(341,20,["Equipo","Escudo","Neuer","Baumann","Rüdiger","Schlotterbeck","Tah","Anton","Raum","Brown N.","Kimmich","Goretzka","Stiller","Gross","Pavlovic","Musiala","Wirtz","Havertz","Sané","Beier"])},
-    {id:"CUW",n:"Curaçao",f:"🇨🇼",fc:"cw",stickers:gen(361,20,["Equipo","Escudo","Room","Doornbusch","Gaari","van Eijma","Floranus","Brenet","Sambo","Obispo","Bazoer","Bacuna L.","Bacuna J.","Noslin","Martha","Comenencia","Felida","Gorre","Kuwas","Chong"])},
-    {id:"CIV",n:"Costa de Marfil",f:"🇨🇮",fc:"ci",stickers:gen(381,20,["Equipo","Escudo","Fofana Y.","Lafont","Agbadou","Diomande O.","Ndicka","Kossounou","Singo","Konan","Sangare","Kessie","Fofana S.","Seri","Adingra","Diallo A.","Pepe N.","Wahi","Bonny","Guessand"])},
-    {id:"ECU",n:"Ecuador",f:"🇪🇨",fc:"ec",stickers:gen(401,20,["Equipo","Escudo","Galíndez","Ramírez M.","Hincapié","Pacho","Estupiñán","Torres F.","Ordóñez","Porozo","Preciado","M.Caicedo","Franco A.","K.Páez","Vite","Alcívar","Valencia E.","Rodríguez K.","J.Caicedo","Angulo"])}
+    {id:"GER",n:"Alemania",f:"🇩🇪",fc:"de",stickers:gen(341,20,["Equipo","Escudo","ter Stegen","Tah","Raum","Schlotterbeck","Rüdiger","Anton","Baku","Mittelstadt","Kimmich","Wirtz","Nmecha","Goretzka","Musiala","Gnabry","Havertz","Sané","Adeyemi","Woltemade"])},
+    {id:"CUW",n:"Curaçao",f:"🇨🇼",fc:"cw",stickers:gen(361,20,["Equipo","Escudo","Room","Obispo","Floranus","Gaari","Brenet","Van Eijma","Sambo","Comenencia","Roemeratoe","J.Bacuna","L.Bacuna","Chong","Gorre","Margaritha","Locadia","Antonisse","Kastaneer","Hansen"])},
+    {id:"CIV",n:"Costa de Marfil",f:"🇨🇮",fc:"ci",stickers:gen(381,20,["Equipo","Escudo","Y.Fofana","Konan","Singo","Kossounou","Ndicka","Boly","Agbadou","O.Diomande","Kessié","S.Fofana","Sangaré","Gbamin","A.Diallo","Haller","Adingra","Y.Diomande","Guessand","Diakite"])},
+    {id:"ECU",n:"Ecuador",f:"🇪🇨",fc:"ec",stickers:gen(401,20,["Equipo","Escudo","Galíndez","G.Valle","Hincapié","Estupiñán","Pacho","Preciado","Ordóñez","Caicedo","A.Franco","K.Páez","P.Vite","Yeboah","Campana","G.Plata","Angulo","A.Minda","K.Rodríguez","E.Valencia"])}
   ]},
   {g:"Grupo F",teams:[
-    {id:"NED",n:"Países Bajos",f:"🇳🇱",fc:"nl",stickers:gen(421,20,["Equipo","Escudo","Verbruggen","Flekken","van Dijk","Aké","van Hecke","van de Ven","Dumfries","Timber J.","de Jong F.","Reijnders","Koopmeiners","Gravenberch","de Roon","Gakpo","Malen","Brobbey","Lang N.","Depay"])},
-    {id:"JPN",n:"Japón",f:"🇯🇵",fc:"jp",stickers:gen(441,20,["Equipo","Escudo","Hayakawa","Suzuki Z.","Nagatomo","Taniguchi","Itakura","Watanabe T.","Tomiyasu","Sugawara","Endo W.","Ito J.","Kamada","Tanaka A.","Doan","Kubo","Maeda","Nakamura K.","Ueda A.","Suzuki I."])},
-    {id:"SWE",n:"Suecia",f:"🇸🇪",fc:"se",stickers:gen(461,20,["Equipo","Escudo","Johansson V.","Nordfeldt","Lindelöf","Hien","Lagerbielke","Starfelt","Ekdal H.","Holm E.","Bergvall","Svanberg","Sema","Ayari","Karlström","Elanga","Gyökeres","Isak","Nilsson G.","Nygren"])},
-    {id:"TUN",n:"Túnez",f:"🇹🇳",fc:"tn",stickers:gen(481,20,["Equipo","Escudo","Dahmen","Chamakh","Talbi","Bronn","Abdi A.","Valery","Ben Hamida","Rekik","Shkiri","Mejbri","Ben Slimane","Ben Ouanes","Gharbi","Khedira R.","Achouri","Mastouri","Saad E.","Elloumi"])}
+    {id:"NED",n:"Países Bajos",f:"🇳🇱",fc:"nl",stickers:gen(421,20,["Equipo","Escudo","Verbruggen","Van Dijk","Van de Ven","Timber","Dumfries","Aké","Frimpong","Van Hecke","Reijnders","Gravenberch","Koopmeiners","F.de Jong","X.Simons","Kluivert","Depay","Malen","Weghorst","Gakpo"])},
+    {id:"JPN",n:"Japón",f:"🇯🇵",fc:"jp",stickers:gen(441,20,["Equipo","Escudo","Z.Suzuki","Mochizuki","Seko","J.Suzuki","Taniguchi","Watanabe","Sano","Soma","A.Tanaka","Kamada","Kubo","Doan","Nakamura","Minamino","Machino","J.Ito","Ogawa","Ueda"])},
+    {id:"SWE",n:"Suecia",f:"🇸🇪",fc:"se",stickers:gen(461,20,["Equipo","Escudo","Johansson","Hien","Gudmundsson","Holm","Lindelöf","Lagerbielke","Bergvall","H.Larsson","Karlström","Ayari","Svanberg","D.Svensson","Sema","Bardghji","Kulusevski","Elanga","A.Isak","Gyökeres"])},
+    {id:"TUN",n:"Túnez",f:"🇹🇳",fc:"tn",stickers:gen(481,20,["Equipo","Escudo","Ben Said","Dahmen","Valery","Talbi","Meriah","A.Abdi","Bronn","Skhiri","Laidouni","Sassi","Ben Romdhane","Mejbri","Achouri","E.Saad","Mastouri","Gharbi","Ltaief","Sliti"])}
   ]},
   {g:"Grupo G",teams:[
-    {id:"BEL",n:"Bélgica",f:"🇧🇪",fc:"be",stickers:gen(501,20,["Equipo","Escudo","Courtois","Lammens","Castagne","Debast","Theate","De Cuyper","De Winter","Mechele","De Bruyne","Onana A.","Tielemans","Witsel","Vanaken","Doku","Lukaku R.","Trossard","De Ketelaere","Saelemaekers"])},
-    {id:"EGY",n:"Egipto",f:"🇪🇬",fc:"eg",stickers:gen(521,20,["Equipo","Escudo","El Shenawy","Shobeir","Fathy H.","Rabia","Hany M.","Fatouh","Abdelmonem","Ibrahim Y.","Attia","Ashour","Lasheen","Saber M.","Salah","Trezeguet","Zizo","Marmoush","Adel I.","Hassan H."])},
-    {id:"IRN",n:"Irán",f:"🇮🇷",fc:"ir",stickers:gen(541,20,["Equipo","Escudo","Beiranvand","Niazmand","Hardani","Hajsafi","Khalilzadeh","Mohammadi M.","Kanaanizad.","Rezaeian","Ezatolahi","Jahanbakhsh","Ghoddos","Mohebi","Torabi","Cheshmi","Taremi","Ghayedi","Alipour","Eckert"])},
-    {id:"NZL",n:"Nueva Zelanda",f:"🇳🇿",fc:"nz",stickers:gen(561,20,["Equipo","Escudo","Crocombe","Woud","Payne","Boxall","Pijnaker","Cacace","Bindon","Smith T.","Bell J.","Garbett","Stamenic","Singh S.","Rufer","Old B.","Wood C.","Barbarouses","Waine","Randall"])}
+    {id:"BEL",n:"Bélgica",f:"🇧🇪",fc:"be",stickers:gen(501,20,["Equipo","Escudo","Courtois","Theate","Castagne","Debast","Mechele","De Cuyper","Meunier","Tielemans","Onana","Raskin","Saelemaekers","Vanaken","De Bruyne","Doku","De Ketelaere","Trossard","Openda","Lukaku"])},
+    {id:"EGY",n:"Egipto",f:"🇪🇬",fc:"eg",stickers:gen(521,20,["Equipo","Escudo","El Shenawy","M.Hany","M.Hamdy","Y.Ibrahim","Sobhi","Rabia","Abdelmaguid","Fatouh","Attia","Zizo","H.Fathy","Lasheen","Ashour","O.Faisal","Salah","M.Mohamed","Trezeguet","O.Marmoush"])},
+    {id:"IRN",n:"Irán",f:"🇮🇷",fc:"ir",stickers:gen(541,20,["Equipo","Escudo","Beiranvand","Pouraliganji","Hajsafi","Mohammadi","Khalilzadeh","Rezaeian","Kanaani","Moharrami","Hardani","Ezatolahi","Ghoddos","Noorafkan","Cheshmi","Mohebi","Azmoun","Taremi","Jahanbakhsh","Gholizadeh"])},
+    {id:"NZL",n:"Nueva Zelanda",f:"🇳🇿",fc:"nz",stickers:gen(561,20,["Equipo","Escudo","Crocombe","Paulsen","Boxall","Cacace","T.Payne","Bindon","de Vries","Surman","J.Bell","Singh","R.Thomas","Garbett","Stamenic","B.Old","C.Wood","E.Just","McCowatt","Barbarouses"])}
   ]},
   {g:"Grupo H",teams:[
-    {id:"ESP",n:"España",f:"🇪🇸",fc:"es",stickers:gen(581,20,["Equipo","Escudo","Simón","Raya D.","Laporte","Cucurella","Cubarsi","Eric García","Porro","Grimaldo","Rodri","Pedri","Gavi","Merino","Zubimendi","Baena","Yamal","Williams N.","Olmo","Oyarzabal"])},
-    {id:"CPV",n:"Cabo Verde",f:"🇨🇻",fc:"cv",stickers:gen(601,20,["Equipo","Escudo","Vozinho","Marcio Rosa","Stopira","Lopes R.","João Paulo","Diney","Logan Costa","Moreira S.","Monteiro J.","Pina K.","Duarte D.","Arcanjo T.","Duarte L.","Semedo Y.","Mendes R.","Rodrigues G.","Cabral J.","da Costa N."])},
-    {id:"KSA",n:"Arabia Saudita",f:"🇸🇦",fc:"sa",stickers:gen(621,20,["Equipo","Escudo","Al-Owais","Al-Aqidi","Abdulhamid","Al-Tambakti","Al-Amri","Boushal","Lajami","Kadesh","Al-Khaibari","Kanno","Al-Dawsari S.","Al-Dawsari N.","Yahya A.","Al-Johani","Al-Buraikan","Al-Shehri","Al-Hamdan","Al-Ghannam"])},
-    {id:"URU",n:"Uruguay",f:"🇺🇾",fc:"uy",stickers:gen(641,20,["Equipo","Escudo","Rochet","Muslera","Varela","Araújo R.","Giménez J.","Bueno","Cáceres S.","Olivera","Ugarte","Valverde","Bentancur","De Arrascaeta","de la Cruz","Pellistri","Canobbio","Rodríguez B.","Núñez D.","Viñas"])}
+    {id:"ESP",n:"España",f:"🇪🇸",fc:"es",stickers:gen(581,20,["Equipo","Escudo","U.Simón","Le Normand","Laporte","Huijsen","Porro","Carvajal","Cucurella","Zubimendi","Rodri","Pedri","F.Ruiz","Merino","Yamal","D.Olmo","N.Williams","F.Torres","Morata","Oyarzabal"])},
+    {id:"CPV",n:"Cabo Verde",f:"🇨🇻",fc:"cv",stickers:gen(601,20,["Equipo","Escudo","Vozinha","L.Costa","Pico","Diney","S.Moreira","W.Pina","J.Paulo","Y.Semedo","K.Pina","P.Andrade","J.Monteiro","Duarte","G.Rodrigues","J.Cabral","R.Mendes","Livramento","W.Semedo","Bebé"])},
+    {id:"KSA",n:"Arabia Saudita",f:"🇸🇦",fc:"sa",stickers:gen(621,20,["Equipo","Escudo","Alaqidi","Al-Sanbi","Abdulhamid","Bouwashl","Thakri","Al-Harbi","Altambakti","Aljuwayr","Aljohani","Alkhaibari","N.Aldawsari","Abu Alshamat","Alsahafi","S.Aldawsari","Al-Aboud","Akbrikan","Alshehri","Al-Hamdan"])},
+    {id:"URU",n:"Uruguay",f:"🇺🇾",fc:"uy",stickers:gen(641,20,["Equipo","Escudo","Rochet","S.Mele","R.Araújo","J.Giménez","S.Cáceres","Olivera","Varela","Nández","Valverde","De Arrascaeta","Bentancur","Ugarte","De la Cruz","M.Araújo","D.Núñez","F.Viñas","R.Aguirre","Pellistri"])}
   ]},
   {g:"Grupo I",teams:[
-    {id:"FRA",n:"Francia",f:"🇫🇷",fc:"fr",stickers:gen(661,20,["Equipo","Escudo","Maignan","Samba","Digne","Gusto","Theo H.","Lucas H.","Konaté","Koundé","Saliba","Upamecano","Kanté","Tchouaméni","Rabiot","Zaïre-Emery","Mbappé","Dembélé","Thuram M.","Olise"])},
-    {id:"SEN",n:"Senegal",f:"🇸🇳",fc:"sn",stickers:gen(681,20,["Equipo","Escudo","Mendy E.","Diouf Y.","Diatta K.","Koulibaly","Niakhate","Diouf M.","Seck","Jakobs","Mbaw","Gueye I.","Gueye P.","Camara L.","Diarra H.","Sarr P.","Mané","Sarr I.","Jackson N.","Ndiaye I."])},
-    {id:"IRQ",n:"Irak",f:"🇮🇶",fc:"iq",stickers:gen(701,20,["Equipo","Escudo","Talib","Hassan J.","Sulaka","Hussein A.","Tahseen","Hashim A.","Younis M.","Doski","Putros F.","Amyn","Bayesh","Iqbal Z.","Al-Ammari","Yakob K.","Al-Hamadi","Mohanad A.","Qasem A.","Jasim A."])},
-    {id:"NOR",n:"Noruega",f:"🇳🇴",fc:"no",stickers:gen(721,20,["Equipo","Escudo","Nyland","Selvik","Ryerson","Pedersen M.","Wolfe","Bjørkan","Ajer","Heggem","Ødegaard","Berge","Aursnes","Thorstvedt","Thorsby","Aasgaard","Haaland","Sørloth","Strand Larsen","Nusa"])}
+    {id:"FRA",n:"Francia",f:"🇫🇷",fc:"fr",stickers:gen(661,20,["Equipo","Escudo","Maignan","T.Hernández","Saliba","Koundé","I.Konaté","Upamecano","Digne","Tchouaméni","Camavinga","M.Koné","Rabiot","Olise","Dembélé","Barcola","Doué","Coman","Ekitiké","Mbappé"])},
+    {id:"SEN",n:"Senegal",f:"🇸🇳",fc:"sn",stickers:gen(681,20,["Equipo","Escudo","E.Mendy","Y.Diouf","Niakhaté","Seck","Jakobs","M.Diouf","Koulibaly","Gueye","P.Sarr","P.Gueye","H.Diarra","L.Camara","Mané","I.Sarr","B.Dia","Ndiaye","N.Jackson","Diatta"])},
+    {id:"IRQ",n:"Irak",f:"🇮🇶",fc:"iq",stickers:gen(701,20,["Equipo","Escudo","J.Hassan","Sulaka","H.Ali","Hashem","Doski","Tahseen","Younis","Z.Iqbal","Al-Ammari","Bavesh","A.Jasim","Amyn","Sher","Farji","O.Rashid","Al-Hamadi","A.Hussein","M.Ali"])},
+    {id:"NOR",n:"Noruega",f:"🇳🇴",fc:"no",stickers:gen(721,20,["Equipo","Escudo","Nyland","Ryerson","Østigård","Ajer","M.Pedersen","Møller Wolfe","Heggem","Thorsby","Ødegaard","Berge","Schjelderup","P.Berg","Haaland","Sørloth","Dønnum","Strand Larsen","Nusa","Bobb"])}
   ]},
   {g:"Grupo J",teams:[
-    {id:"ARG",n:"Argentina",f:"🇦🇷",fc:"ar",stickers:gen(741,20,["Equipo","Escudo","E.Martínez","Musso","Balerdi","Montiel","Lis.Martínez","Romero","Otamendi","Medina F.","Molina","Tagliafico","de Paul","Mac Allister","E.Fernández","Paredes","Lo Celso","Messi","L.Álvarez","Laut.Martínez"])},
-    {id:"ALG",n:"Argelia",f:"🇩🇿",fc:"dz",stickers:gen(761,20,["Equipo","Escudo","Zidane L.","Benbot","Mandi","Bensebaini","Ait-Nouri","Tougai","Hadjam","Belghali","Bentaleb","Zerrouki","Boudaoui","Chaibi","Aouar","Maza I.","Mahrez","Amoura","Gouiri","Ghedjemis"])},
-    {id:"AUT",n:"Austria",f:"🇦🇹",fc:"at",stickers:gen(781,20,["Equipo","Escudo","Schlager A.","Wiegele","Pentz","Danso","Posch","Alaba","Lienhart","Friedl","Schlager X.","Seiwald","Sabitzer","Grillitsch","Baumgartner","Laimer","Wimmer","Arnautovic","Gregoritsch","Kalajdžić"])},
-    {id:"JOR",n:"Jordania",f:"🇯🇴",fc:"jo",stickers:gen(801,20,["Equipo","Escudo","Abulaila","Bani Attiah","Abu Hashish","Nasib","Abu Dahab","Al-Arab","Abualnadi","Obaid","Al-Rosan","Jamous","Olwan A.","Ayed R.","Sadeh I.","Abu Taha","Al-Rashdan","Al-Tamari","Azaizeh","Al-Mardi"])}
+    {id:"ARG",n:"Argentina",f:"🇦🇷",fc:"ar",stickers:gen(741,20,["Equipo","Escudo","E.Martínez","N.Molina","C.Romero","Otamendi","Tagliafico","Balerdi","E.Fernández","Mac Allister","De Paul","Palacios","Paredes","N.Paz","Mastantuono","N.González","Messi","L.Martínez","J.Álvarez","G.Simeone"])},
+    {id:"ALG",n:"Argelia",f:"🇩🇿",fc:"dz",stickers:gen(761,20,["Equipo","Escudo","Guendouz","Bensebaini","Atal","Aït-Nouri","Tougai","A.Mandi","Bennacer","Aouar","Boudaoui","Zerrouki","Bentalab","Chaibi","Mahrez","Benrahma","Hadj Moussa","Gouiri","Bounedjah","Amoura"])},
+    {id:"AUT",n:"Austria",f:"🇦🇹",fc:"at",stickers:gen(781,20,["Equipo","Escudo","Schlager","Pentz","Alaba","Danso","Lienhart","Posch","Mwene","Prass","X.Schlager","Sabitzer","Laimer","Grillitsch","Seiwald","Schmid","Wimmer","Baumgartner","Gregoritsch","Arnautovic"])},
+    {id:"JOR",n:"Jordania",f:"🇯🇴",fc:"jo",stickers:gen(801,20,["Equipo","Escudo","Abulaila","Haddad","Abu Hashish","Al-Arab","Nasib","Obaid","Abualnadi","Saadeh","Al-Rashdan","Al-Rawabdeh","Abu Taha","Jamous","Al-Taamari","Al-Naimat","Al-Mardi","Olwan","Abu Zrayq","Sabra"])}
   ]},
   {g:"Grupo K",teams:[
-    {id:"POR",n:"Portugal",f:"🇵🇹",fc:"pt",stickers:gen(821,20,["Equipo","Escudo","D.Costa","Sá J.","Cancelo","Dalot","Semedo N.","Mendes N.","Dias R.","Inácio","Neves R.","Neves J.","Vitinha","B.Fernandes","B.Silva","Ronaldo","Félix J.","Leão","F.Conceição","Guedes"])},
-    {id:"COD",n:"RD Congo",f:"🇨🇩",fc:"cd",stickers:gen(841,20,["Equipo","Escudo","Mpasi","Epolo","Mbemba","Masuaku","Kalulu G.","Kayembe J.","Batubinsika","Tuanzebe","Wan-Bissaka","Elia","Moutoussamy","Kayembe E.","Pickel","Kakuta","Sadiki","Mbuku","Bakambu","Wissa"])},
-    {id:"UZB",n:"Uzbekistán",f:"🇺🇿",fc:"uz",stickers:gen(861,20,["Equipo","Escudo","Yusupov","Nematov","Khusanov","Alijonov","Sayfiev","Ashurmatov","Nasrullaev","Eshmurodov","Mozgovoy","Shukurov","Iskanderov","Masharipov","Urunov","Hamdamov","Fayzullaev","Shomurodov","Amonov","Sergeev"])},
-    {id:"COL",n:"Colombia",f:"🇨🇴",fc:"co",stickers:gen(881,20,["Equipo","Escudo","Vargas C.","Montero A.","Sánchez D.","Lucumí","Mina Y.","Ditta","Muñoz D.","Arias S.","Mojica","Rios R.","Lerma","Castaño K.","Quintero","Rodríguez J.","Arias J.","Carrascal","L.Díaz","Durán"])}
+    {id:"POR",n:"Portugal",f:"🇵🇹",fc:"pt",stickers:gen(821,20,["Equipo","Escudo","D.Costa","J.Sá","R.Dias","Cancelo","Dalot","N.Mendes","Inácio","B.Silva","B.Fernandes","R.Neves","Vitinha","J.Neves","Ronaldo","Trincão","J.Félix","G.Ramos","P.Neto","R.Leão"])},
+    {id:"COD",n:"RD Congo",f:"🇨🇩",fc:"cd",stickers:gen(841,20,["Equipo","Escudo","Mpasi","Wan-Bissaka","Tuanzebe","Masuaku","Mbemba","J.Kayembe","Pickel","Mukau","E.Kayembe","Moutoussamy","Sadiki","Bongonda","Elia","Wissa","Cipenga","Mayele","Bakambu","Mbuku"])},
+    {id:"UZB",n:"Uzbekistán",f:"🇺🇿",fc:"uz",stickers:gen(861,20,["Equipo","Escudo","Yusupov","Savfiev","Nasrullaev","Eshmurodov","Aliqulov","Ashurmatov","Alijonov","Khusanov","Hamrobekov","Shukurov","Iskanderov","Turgunboev","Erkinov","Shomurodov","Urunov","Masharipov","Sergeev","Fayzullaev"])},
+    {id:"COL",n:"Colombia",f:"🇨🇴",fc:"co",stickers:gen(881,20,["Equipo","Escudo","C.Vargas","Ospina","D.Sánchez","Y.Mina","D.Muñoz","Mojica","Lucumí","S.Arias","J.Lerma","K.Castaño","R.Ríos","James","Quintero","Carrascal","J.Arias","J.Córdoba","L.Suárez","L.Díaz"])}
   ]},
   {g:"Grupo L",teams:[
-    {id:"ENG",n:"Inglaterra",f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",fc:"gb-eng",stickers:gen(901,20,["Equipo","Escudo","Pickford","Henderson D.","James R.","Stones","Guehi","Konsa","Burn","Quansah","Rice","Bellingham","Mainoo","Anderson E.","Rogers M.","Eze","Saka","Kane","Watkins","Rashford"])},
-    {id:"CRO",n:"Croacia",f:"🇭🇷",fc:"hr",stickers:gen(921,20,["Equipo","Escudo","Livaković","Kotarski","Gvardiol","Caleta-Car","Šutalo","Stanišić","Pongračić","Erlić","Modrić","Kovačić","Pašalić","Vlašić","Baturina","Šućić L.","Jakić","Perišić","Kramarić","Budimir"])},
-    {id:"GHA",n:"Ghana",f:"🇬🇭",fc:"gh",stickers:gen(941,20,["Equipo","Escudo","Ati-Zigi","Anang","Seidu","Mensah G.","Mumin","Opoku","Baba A.","Adjetey","Partey","Semenyo","Owusu","Boakye","Yirenkyi","Fatawu","Ayew J.","Thomas-A.","Sulemana","I.Williams"])},
-    {id:"PAN",n:"Panamá",f:"🇵🇦",fc:"pa",stickers:gen(961,20,["Equipo","Escudo","Mosquera","Mejía","Blackman","Gutiérrez J.","Murillo A.","Escobar","Andrade","Córdoba J.","Davis E.","Godoy","Harvey","Martínez C.","Rodríguez J.","Yanis","Bárcenas","Carrasquilla","Díaz I.","Waterman C."])}
+    {id:"ENG",n:"Inglaterra",f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",fc:"gb-eng",stickers:gen(901,20,["Equipo","Escudo","Pickford","J.Stones","Guéhi","Konsa","Alexander-Arnold","R.James","D.Burn","Henderson","D.Rice","Bellingham","C.Palmer","Rogers","A.Gordon","Foden","Saka","H.Kane","Rashford","Watkins"])},
+    {id:"CRO",n:"Croacia",f:"🇭🇷",fc:"hr",stickers:gen(921,20,["Equipo","Escudo","Livaković","Caleta-Car","Gvardiol","Stanišić","Vušković","Šutalo","Jakić","Modrić","Kovačić","Baturina","Majer","M.Pašalić","Sučić","Perišić","Marco Paš.","Budimir","Kramarić","Ivanović"])},
+    {id:"GHA",n:"Ghana",f:"🇬🇭",fc:"gh",stickers:gen(941,20,["Equipo","Escudo","Ati Zigi","Lamptey","Salisu","Seidu","Djiku","G.Mensah","Yirenkyi","Fatawu","Partey","Abdul Samed","Sulemana","Kudus","I.Williams","J.Ayew","A.Ayew","Paintsil","Bukari","Semenyo"])},
+    {id:"PAN",n:"Panamá",f:"🇵🇦",fc:"pa",stickers:gen(961,20,["Equipo","Escudo","Mosquera","L.Mejía","F.Escobar","Andrade","Murillo","E.Davis","J.Córdoba","Blackman","C.Martínez","Godoy","Carrasquilla","Bárcenas","Harvey","I.Díaz","Fajardo","Waterman","J.Rodríguez","A.Quintero"])}
   ]},
   {g:"Extra (1:100 sobres)",teams:[
     {id:"EXT",n:"Extra Stickers",f:"⭐",fc:"",stickers:genExtra()}
@@ -1314,6 +1494,10 @@ function checkPinEntry() {
       if(np&&/^\d{4}$/.test(np)) DB.setAdminPin(np,()=>showToast('✅ PIN admin actualizado'));
       else if(np) showToast('⚠ PIN debe ser 4 dígitos');
     });
+    return;
+  }
+  if(action==='fixture-admin') {
+    DB.getAdminPin(stored=>{ if(pin!==stored){_pinWrong();return;} closePinEntry(); _unlockFixAdmin(); });
     return;
   }
   const p = _cachedProfiles.find(x=>x.name===pinTarget.name);
@@ -1694,6 +1878,302 @@ if(_savedProf) {
   });
 } else {
   renderProfiles();
+}
+
+// ── FIXTURE ───────────────────────────────────────────────────────────
+const FX_GROUPS = {
+  A:{t:["MEX","RSA","KOR","CZE"],m:[
+    {id:"GA1",h:"MEX",a:"RSA"},{id:"GA2",h:"KOR",a:"CZE"},
+    {id:"GA3",h:"MEX",a:"KOR"},{id:"GA4",h:"RSA",a:"CZE"},
+    {id:"GA5",h:"MEX",a:"CZE"},{id:"GA6",h:"RSA",a:"KOR"}]},
+  B:{t:["CAN","BIH","QAT","SUI"],m:[
+    {id:"GB1",h:"CAN",a:"BIH"},{id:"GB2",h:"QAT",a:"SUI"},
+    {id:"GB3",h:"CAN",a:"QAT"},{id:"GB4",h:"BIH",a:"SUI"},
+    {id:"GB5",h:"CAN",a:"SUI"},{id:"GB6",h:"BIH",a:"QAT"}]},
+  C:{t:["BRA","MAR","HAI","SCO"],m:[
+    {id:"GC1",h:"BRA",a:"MAR"},{id:"GC2",h:"HAI",a:"SCO"},
+    {id:"GC3",h:"BRA",a:"HAI"},{id:"GC4",h:"MAR",a:"SCO"},
+    {id:"GC5",h:"BRA",a:"SCO"},{id:"GC6",h:"MAR",a:"HAI"}]},
+  D:{t:["USA","PAR","AUS","TUR"],m:[
+    {id:"GD1",h:"USA",a:"PAR"},{id:"GD2",h:"AUS",a:"TUR"},
+    {id:"GD3",h:"USA",a:"AUS"},{id:"GD4",h:"PAR",a:"TUR"},
+    {id:"GD5",h:"USA",a:"TUR"},{id:"GD6",h:"PAR",a:"AUS"}]},
+  E:{t:["GER","CUW","CIV","ECU"],m:[
+    {id:"GE1",h:"GER",a:"CUW"},{id:"GE2",h:"CIV",a:"ECU"},
+    {id:"GE3",h:"GER",a:"CIV"},{id:"GE4",h:"CUW",a:"ECU"},
+    {id:"GE5",h:"GER",a:"ECU"},{id:"GE6",h:"CUW",a:"CIV"}]},
+  F:{t:["NED","JPN","SWE","TUN"],m:[
+    {id:"GF1",h:"NED",a:"JPN"},{id:"GF2",h:"SWE",a:"TUN"},
+    {id:"GF3",h:"NED",a:"SWE"},{id:"GF4",h:"JPN",a:"TUN"},
+    {id:"GF5",h:"NED",a:"TUN"},{id:"GF6",h:"JPN",a:"SWE"}]},
+  G:{t:["BEL","EGY","IRN","NZL"],m:[
+    {id:"GG1",h:"BEL",a:"EGY"},{id:"GG2",h:"IRN",a:"NZL"},
+    {id:"GG3",h:"BEL",a:"IRN"},{id:"GG4",h:"EGY",a:"NZL"},
+    {id:"GG5",h:"BEL",a:"NZL"},{id:"GG6",h:"EGY",a:"IRN"}]},
+  H:{t:["ESP","CPV","KSA","URU"],m:[
+    {id:"GH1",h:"ESP",a:"CPV"},{id:"GH2",h:"KSA",a:"URU"},
+    {id:"GH3",h:"ESP",a:"KSA"},{id:"GH4",h:"CPV",a:"URU"},
+    {id:"GH5",h:"ESP",a:"URU"},{id:"GH6",h:"CPV",a:"KSA"}]},
+  I:{t:["FRA","SEN","IRQ","NOR"],m:[
+    {id:"GI1",h:"FRA",a:"SEN"},{id:"GI2",h:"IRQ",a:"NOR"},
+    {id:"GI3",h:"FRA",a:"IRQ"},{id:"GI4",h:"SEN",a:"NOR"},
+    {id:"GI5",h:"FRA",a:"NOR"},{id:"GI6",h:"SEN",a:"IRQ"}]},
+  J:{t:["ARG","ALG","AUT","JOR"],m:[
+    {id:"GJ1",h:"ARG",a:"ALG"},{id:"GJ2",h:"AUT",a:"JOR"},
+    {id:"GJ3",h:"ARG",a:"AUT"},{id:"GJ4",h:"ALG",a:"JOR"},
+    {id:"GJ5",h:"ARG",a:"JOR"},{id:"GJ6",h:"ALG",a:"AUT"}]},
+  K:{t:["POR","COD","UZB","COL"],m:[
+    {id:"GK1",h:"POR",a:"COD"},{id:"GK2",h:"UZB",a:"COL"},
+    {id:"GK3",h:"POR",a:"UZB"},{id:"GK4",h:"COD",a:"COL"},
+    {id:"GK5",h:"POR",a:"COL"},{id:"GK6",h:"COD",a:"UZB"}]},
+  L:{t:["ENG","CRO","GHA","PAN"],m:[
+    {id:"GL1",h:"ENG",a:"CRO"},{id:"GL2",h:"GHA",a:"PAN"},
+    {id:"GL3",h:"ENG",a:"GHA"},{id:"GL4",h:"CRO",a:"PAN"},
+    {id:"GL5",h:"ENG",a:"PAN"},{id:"GL6",h:"CRO",a:"GHA"}]}
+};
+const FX_KO = [
+  {id:"R32",label:"Ronda de 32",n:16},
+  {id:"R16",label:"Octavos de Final",n:8},
+  {id:"QF", label:"Cuartos de Final",n:4},
+  {id:"SF", label:"Semifinales",n:2},
+  {id:"TP", label:"Tercer Puesto",n:1},
+  {id:"FIN",label:"⭐ Gran Final",n:1}
+];
+
+let _fixData = {groups:{}, knockout:{}};
+let _fixTab = 'grupos';
+let _fixGroup = 'A';
+let _fixAdminMode = false;
+let _fixSaveTimer = null;
+let _fixEditTarget = null;
+let _teamMeta = null;
+
+function _buildTeamMeta() {
+  if(_teamMeta) return;
+  _teamMeta = {};
+  EQUIPOS.forEach(g => g.teams.forEach(t => _teamMeta[t.id] = {n:t.n, f:t.f}));
+}
+function tn(id) { _buildTeamMeta(); return id==='?'?'TBD':(_teamMeta[id]?.n || id); }
+function tf(id) { _buildTeamMeta(); return id==='?'?'❓':(_teamMeta[id]?.f || ''); }
+
+const FX_LS_KEY = 'panini2026_fixture';
+DB.getFixture = function(cb) {
+  if(IS_GAS) {
+    _gasRun('serverGetFixture', [], json => {
+      try { cb(JSON.parse(json)||{groups:{},knockout:{}}); } catch(e){ cb({groups:{},knockout:{}}); }
+    }); return;
+  }
+  try { cb(JSON.parse(localStorage.getItem(FX_LS_KEY))||{groups:{},knockout:{}}); } catch(e){ cb({groups:{},knockout:{}}); }
+};
+DB.saveFixture = function(data) {
+  clearTimeout(_fixSaveTimer);
+  if(IS_GAS) {
+    _fixSaveTimer = setTimeout(()=>_gasRun('serverSaveFixture',[JSON.stringify(data)],null,()=>showToast('⚠ Error al guardar')),1500);
+  } else {
+    localStorage.setItem(FX_LS_KEY, JSON.stringify(data));
+  }
+};
+
+function openFixture() {
+  _fixAdminMode = false; _fixGroup = 'A'; _fixTab = 'grupos';
+  document.getElementById('profOverlay').style.display = 'none';
+  document.getElementById('fixOverlay').style.display = 'flex';
+  document.getElementById('fixEditBtn').textContent = '✏️ Editar';
+  document.getElementById('fixEditBtn').classList.remove('active');
+  document.getElementById('ftabGrupos').classList.add('active');
+  document.getElementById('ftabBracket').classList.remove('active');
+  showLoading('Cargando fixture...');
+  DB.getFixture(data => { hideLoading(); _fixData = data; renderFixBody(); });
+}
+function closeFixture() {
+  document.getElementById('fixOverlay').style.display = 'none';
+  if (!currentProfile) {
+    document.getElementById('profOverlay').style.display = 'flex';
+  }
+  _fixAdminMode = false;
+}
+function showFixTab(tab) {
+  _fixTab = tab;
+  document.getElementById('ftabGrupos').classList.toggle('active', tab==='grupos');
+  document.getElementById('ftabBracket').classList.toggle('active', tab==='bracket');
+  renderFixBody();
+}
+function toggleFixAdmin() {
+  if(_fixAdminMode) {
+    _fixAdminMode = false;
+    document.getElementById('fixEditBtn').textContent = '✏️ Editar';
+    document.getElementById('fixEditBtn').classList.remove('active');
+    renderFixBody(); return;
+  }
+  DB.getAdminPin(stored => {
+    if(!stored) { showToast('⚠ Configurá primero el PIN de admin'); return; }
+    _showAdminPinEntry('fixture-admin', {});
+  });
+}
+function _unlockFixAdmin() {
+  _fixAdminMode = true;
+  document.getElementById('fixEditBtn').textContent = '🔒 Salir edición';
+  document.getElementById('fixEditBtn').classList.add('active');
+  renderFixBody();
+  showToast('✅ Modo edición activado');
+}
+
+function renderFixBody() {
+  if(_fixTab==='grupos') renderFixGrupos(); else renderFixBracket();
+}
+
+function calcStandings(gKey) {
+  const grp = FX_GROUPS[gKey];
+  const st = {};
+  grp.t.forEach(t => st[t]={t,pj:0,pg:0,pe:0,pp:0,gf:0,gc:0,dg:0,pts:0});
+  grp.m.forEach(m => {
+    const r = _fixData.groups?.[m.id];
+    if(r?.hs==null || r?.as==null) return;
+    const hs=Number(r.hs), as_=Number(r.as);
+    st[m.h].pj++; st[m.a].pj++;
+    st[m.h].gf+=hs; st[m.h].gc+=as_;
+    st[m.a].gf+=as_; st[m.a].gc+=hs;
+    if(hs>as_)       { st[m.h].pg++; st[m.h].pts+=3; st[m.a].pp++; }
+    else if(hs===as_){ st[m.h].pe++; st[m.h].pts++;  st[m.a].pe++; st[m.a].pts++; }
+    else             { st[m.a].pg++; st[m.a].pts+=3; st[m.h].pp++; }
+  });
+  Object.values(st).forEach(t=>t.dg=t.gf-t.gc);
+  return Object.values(st).sort((a,b)=>b.pts-a.pts||b.dg-a.dg||b.gf-a.gf);
+}
+
+function renderFixGrupos() {
+  const body = document.getElementById('fixBody');
+  const selHtml = Object.keys(FX_GROUPS).map(k =>
+    `<button class="grp-sel-btn${k===_fixGroup?' active':''}" onclick="selectFixGroup('${k}')">${k}</button>`
+  ).join('');
+  const grp = FX_GROUPS[_fixGroup];
+  const stands = calcStandings(_fixGroup);
+  const posClass = i => i===0?'q1':i===1?'q2':i===2?'q3':'';
+  const standRows = stands.map((s,i)=>`
+    <tr class="${posClass(i)}">
+      <td class="tcell">${tf(s.t)} ${tn(s.t)}</td>
+      <td>${s.pj}</td><td>${s.pg}</td><td>${s.pe}</td><td>${s.pp}</td>
+      <td>${s.gf}</td><td>${s.gc}</td><td>${s.dg>0?'+'+s.dg:s.dg}</td>
+      <td class="pts">${s.pts}</td>
+    </tr>`).join('');
+  const matchCards = grp.m.map(m => {
+    const r = _fixData.groups?.[m.id];
+    const played = r?.hs!=null && r?.as!=null;
+    const scoreHtml = played
+      ? `<span class="mscore">${r.hs} – ${r.as}</span>`
+      : `<span class="mscore pending">vs</span>`;
+    const cls = `match-card${_fixAdminMode?' editable':''}${played?' played':''}`;
+    const click = _fixAdminMode ? `onclick="openMatchEdit('${m.id}','group')"` : '';
+    return `<div class="${cls}" ${click}>
+      <span class="mflag">${tf(m.h)}</span><span class="mteam home">${tn(m.h)}</span>
+      ${scoreHtml}
+      <span class="mteam away">${tn(m.a)}</span><span class="mflag">${tf(m.a)}</span>
+    </div>`;
+  }).join('');
+  body.innerHTML = `
+    <div class="grp-selector">${selHtml}</div>
+    <div class="sect-title">Grupo ${_fixGroup} — Posiciones</div>
+    <table class="standings-table">
+      <thead><tr><th>Equipo</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th></tr></thead>
+      <tbody>${standRows}</tbody>
+    </table>
+    <div class="sect-title">Partidos${_fixAdminMode?' — tocá para editar':''}</div>
+    <div class="match-list">${matchCards}</div>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:rgba(255,255,255,0.35)">
+      <span>🟩 Clasifica 1°/2°</span><span>🟨 Posible 3° clasificado</span>
+    </div>`;
+}
+function selectFixGroup(key) { _fixGroup=key; renderFixGrupos(); }
+
+function renderFixBracket() {
+  const body = document.getElementById('fixBody');
+  body.innerHTML = FX_KO.map(rd => {
+    const cards = [];
+    for(let i=1;i<=rd.n;i++) {
+      const mid = rd.n===1 ? rd.id : `${rd.id}_${i}`;
+      const r = _fixData.knockout?.[mid] || {};
+      const h = r.h||'?', a = r.a||'?';
+      const played = r.hs!=null && r.as!=null;
+      const scoreHtml = played
+        ? `<span class="mscore">${r.hs} – ${r.as}</span>`
+        : `<span class="mscore pending">vs</span>`;
+      const cls = `match-card${_fixAdminMode?' editable':''}${played?' played':''}`;
+      const click = _fixAdminMode ? `onclick="openMatchEdit('${mid}','ko')"` : '';
+      cards.push(`<div class="${cls}" ${click}>
+        <span class="mflag">${tf(h)}</span><span class="mteam home">${tn(h)}</span>
+        ${scoreHtml}
+        <span class="mteam away">${tn(a)}</span><span class="mflag">${tf(a)}</span>
+      </div>`);
+    }
+    return `<div class="ko-round"><div class="ko-round-title">${rd.label}</div><div class="match-list">${cards.join('')}</div></div>`;
+  }).join('');
+}
+
+function openMatchEdit(id, type) {
+  if(!_fixAdminMode) return;
+  let h='?', a='?';
+  if(type==='group') {
+    for(const gk of Object.keys(FX_GROUPS)) {
+      const m = FX_GROUPS[gk].m.find(x=>x.id===id);
+      if(m){ h=m.h; a=m.a; break; }
+    }
+  } else {
+    const r = _fixData.knockout?.[id]||{};
+    h=r.h||'?'; a=r.a||'?';
+  }
+  _fixEditTarget = {id, type, h, a};
+  const isKo = type==='ko';
+  document.getElementById('fixModalTitle').textContent = isKo
+    ? 'Partido eliminatorio'
+    : `${tf(h)} ${tn(h)}  vs  ${tn(a)} ${tf(a)}`;
+  document.getElementById('fixModalTeamInputs').innerHTML = isKo
+    ? `<div class="ko-edit-teams" style="margin-bottom:8px">
+        <input class="ko-team-input" id="fixKoH" placeholder="LOCAL" value="${h==='?'?'':h}" maxlength="5">
+        <span style="color:rgba(255,255,255,0.3);font-size:13px">vs</span>
+        <input class="ko-team-input" id="fixKoA" placeholder="VISITANTE" value="${a==='?'?'':a}" maxlength="5">
+      </div>` : '';
+  document.getElementById('fixSHName').textContent = isKo?'':`${tf(h)} ${tn(h)}`;
+  document.getElementById('fixSAName').textContent = isKo?'':`${tn(a)} ${tf(a)}`;
+  const r = (type==='group'?_fixData.groups:_fixData.knockout)?.[id]||{};
+  document.getElementById('fixSH').value = r.hs!=null ? r.hs : '';
+  document.getElementById('fixSA').value = r.as!=null ? r.as : '';
+  document.getElementById('fixModalOverlay').style.display = 'flex';
+  setTimeout(()=>document.getElementById('fixSH').focus(),100);
+}
+function saveMatchScore() {
+  if(!_fixEditTarget) return;
+  const {id, type} = _fixEditTarget;
+  const hv = document.getElementById('fixSH').value;
+  const av = document.getElementById('fixSA').value;
+  if(hv===''||av===''){showToast('⚠ Ingresá ambos goles'); return;}
+  const bucket = type==='group'?'groups':'knockout';
+  if(!_fixData[bucket]) _fixData[bucket]={};
+  const entry = {...(_fixData[bucket][id]||{}), hs:Number(hv), as:Number(av)};
+  if(type==='ko') {
+    const kh=(document.getElementById('fixKoH')?.value||'').trim().toUpperCase();
+    const ka=(document.getElementById('fixKoA')?.value||'').trim().toUpperCase();
+    if(kh) entry.h=kh;
+    if(ka) entry.a=ka;
+  }
+  _fixData[bucket][id] = entry;
+  DB.saveFixture(_fixData);
+  closeMatchModal();
+  renderFixBody();
+  showToast('✅ Resultado guardado');
+}
+function clearMatchScore() {
+  if(!_fixEditTarget) return;
+  const {id, type} = _fixEditTarget;
+  const bucket = type==='group'?'groups':'knockout';
+  if(_fixData[bucket]?.[id]) { delete _fixData[bucket][id].hs; delete _fixData[bucket][id].as; }
+  DB.saveFixture(_fixData);
+  closeMatchModal();
+  renderFixBody();
+  showToast('🗑 Resultado borrado');
+}
+function closeMatchModal() {
+  document.getElementById('fixModalOverlay').style.display='none';
+  _fixEditTarget=null;
 }
 </script>
 </body>
